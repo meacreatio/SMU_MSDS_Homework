@@ -1,0 +1,69 @@
+---
+title: "Live session Unit 04 assignment"
+author: "Matt Pavlovich"
+date: "9/24/2017"
+output: 
+  html_document:
+      keep_md: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 1: 
+#### a. Install the FiveThirtyEight Package
+```{r}
+# commenting this out in case the user's version of R is not appropriate for FiveThirtyEight
+# install.packages("fivethirtyeight")
+library(fivethirtyeight)
+
+```
+
+#### b. 
+```{r}
+ds <- data(package = "fivethirtyeight")
+ds <- ds$result[, "Item"]
+eightteenthName <- ds[18]
+eightteenthName
+df <- college_recent_grads
+```
+
+#### c. College recent grads URL
+```{r}
+vignette("fivethirtyeight", package = "fivethirtyeight") 
+# http://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/
+```
+
+#### d. Dimensions and Column Names
+```{r}
+dim(df)
+colnames(df)
+```
+
+
+# Question 2: 
+#### a.
+```{r}
+colnames(df)
+length(df)
+```
+
+#### b.
+````{r}
+df.major <- as.data.frame(table(df$major_category))
+colnames(df.major) <- c("major_category", "major_count")
+df.major
+```
+
+#### c.
+```{r}
+par(mar=c(3, 17,4, 2))
+barplot(df.major$major_count, names.arg = df.major$major_category, horiz=T, las = 1, xlim=c(0, 30), col = "blue", main = "Most Common College Majors", xlab = "Count", ylab = "Major", mgp=c(0,2,1))
+```
+
+#### d.
+```{r}
+write.csv(df, file = "college_recent_grads.csv", row.names = F)
+```
