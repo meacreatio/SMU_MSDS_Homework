@@ -10,5 +10,5 @@ To store SMU_MDS homework
   * https://github.com/rudeboybert/fivethirtyeight
 
 ### Contact Information
-Matt Pavlovich
+- Matt Pavlovich
 mpavlovich@mail.smu.edu
