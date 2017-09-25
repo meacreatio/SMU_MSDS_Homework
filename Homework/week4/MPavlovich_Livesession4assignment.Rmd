@@ -21,7 +21,7 @@ library(fivethirtyeight)
 
 ```
 
-#### b. 
+#### b. Assign data frame to df
 ```{r}
 ds <- data(package = "fivethirtyeight")
 ds <- ds$result[, "Item"]
@@ -44,26 +44,30 @@ colnames(df)
 
 
 # Question 2: 
-#### a.
+#### a. Column names and column counts
 ```{r}
 colnames(df)
 length(df)
 ```
 
-#### b.
+#### b. Create major frequency data frame
 ````{r}
 df.major <- as.data.frame(table(df$major_category))
 colnames(df.major) <- c("major_category", "major_count")
 df.major
 ```
 
-#### c.
+#### c. Bar Chart
 ```{r}
 par(mar=c(3, 17,4, 2))
 barplot(df.major$major_count, names.arg = df.major$major_category, horiz=T, las = 1, xlim=c(0, 30), col = "blue", main = "Most Common College Majors", xlab = "Count", ylab = "Major", mgp=c(0,2,1))
 ```
 
-#### d.
+#### d. Write csv to file
 ```{r}
 write.csv(df, file = "college_recent_grads.csv", row.names = F)
 ```
+
+# Question 3:
+#### d. Github Link
+https://github.com/meacreatio/SMU_MSDS_Homework
