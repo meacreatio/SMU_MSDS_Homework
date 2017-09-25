@@ -6,7 +6,8 @@ To store SMU_MDS homework
 * 6306 Homework
 
 ### Source of Materials
-NA
+* FiveThirtyEight
+  * https://github.com/rudeboybert/fivethirtyeight
 
 ### Contact Information
 mpavlovich@mail.smu.edu
