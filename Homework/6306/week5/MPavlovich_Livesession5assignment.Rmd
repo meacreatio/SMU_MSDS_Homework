@@ -1,0 +1,86 @@
+---
+title: "Live session Unit 05 assignment"
+author: "Matt Pavlovich"
+date: "10/01/2017"
+output: 
+  html_document:
+      keep_md: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "/Users/mattpavlovich")
+```
+# Link to homework files:
+#### https://github.com/meacreatio/SMU_MSDS_Homework/tree/master/Homework/6306/week5
+
+# Question 1: Data Munging 
+#### a. Import text file and rename colmns
+```{r}
+df <- read.table("yob2016.txt", sep = ";", header = F)
+names(df) <- c("Name", "Sex", "Count")
+```
+
+#### b. Data Summary and Structure
+```{r}
+summary(df)
+str(df)
+dim(df)
+```
+
+#### c. Display name that ends with 'yyy'
+```{r}
+df.mispelled.name <- df[grep("yyy$", df$Name), ]
+as.character(df.mispelled.name$Name[1])
+```
+
+#### d. Remove invalid name and create new dataframe reference
+```{r}
+index.misspelled.name <- which(df$Name == df.mispelled.name$Name[1])
+y2016 <- df[-index.misspelled.name, ]
+```
+
+# Question 2: Data Merging
+#### a. Import text file and rename colmns
+```{r}
+y2015 <- read.table("yob2015.txt", sep = ",", header = F)
+names(y2015) <- c("Name", "Sex", "Count")
+```
+
+#### b. Display last ten rows
+```{r}
+tail(y2015, n = 10)
+# all names are male and the dataset is ordered by sex ascending and count descending
+```
+
+#### c. Merge 2016 and 2015
+```{r}
+final <- merge(y2015, y2016, by = c("Name", "Sex"), all = T)
+final <- final[complete.cases(final), ]
+```
+
+# Question 3: Data Summary
+#### a. Amount of children
+```{r}
+final$Total <- rowSums(final[, c("Count.x", "Count.y")])
+sum(final$Total)
+```
+
+#### b. Sort by Total and display top ten names
+```{r}
+df.names.sorted.total <- final[order(-final$Total), ]
+head(df.names.sorted.total, n = 10)
+```
+
+##### c. Display top ten girls' names
+```{r}
+df.names.sorted.total.girls <- df.names.sorted.total[df.names.sorted.total$Sex == "F", ]
+girl <- df.names.sorted.total.girls[1:10, ]
+girl
+```
+
+#### d. Write top 10 girls names to a csv file
+```{r}
+write.csv(girl[, c("Name", "Total")], file = "itsagirl.csv", row.names = F)
+```
