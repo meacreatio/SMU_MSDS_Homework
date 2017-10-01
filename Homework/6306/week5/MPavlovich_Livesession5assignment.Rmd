@@ -10,7 +10,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = "/Users/mattpavlovich")
+knitr::opts_knit$set(root.dir = "~/")
 ```
 # Link to homework files:
 #### https://github.com/meacreatio/SMU_MSDS_Homework/tree/master/Homework/6306/week5
