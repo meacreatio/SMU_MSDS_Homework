@@ -10,7 +10,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-# path to your data files here
+# set the path to your data files here
 knitr::opts_knit$set(root.dir = "~/")
 ```
 # Link to homework files:
