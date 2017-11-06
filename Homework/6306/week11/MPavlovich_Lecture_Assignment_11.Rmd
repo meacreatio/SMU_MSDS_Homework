@@ -1,0 +1,57 @@
+---
+title: "MPavlovich_Lecture_Assignment_11"
+author: "Matt Pavlovich"
+date: "11/6/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tseries)
+```
+
+# Download the data of SP500 '^gspc'.
+```{r}
+SNPdata <- get.hist.quote('^gspc', quote = "Close")
+```
+
+# Calculate the log returns
+```{r}
+SNPret <- log(lag(SNPdata)) - log(SNPdata)
+```
+
+# Calculate volatility
+```{r}
+SNPvol <- sd(SNPret) * sqrt(250) * 100
+```
+
+# Define getVol function for volatility
+```{r}
+getVol <- function(d, logrets) {
+	var = 0
+	lam = 0
+	varlist <- c()
+
+	for (r in logrets) {
+		lam = lam*(1 - 1/d) + 1
+    var = (1 - 1/lam)*var + (1/lam)*r^2
+		varlist <- c(varlist, var)
+	}
+
+	sqrt(varlist)
+}
+```
+
+# Calculate volatility over entire length of series for various three different decay factors: 10 30. 100
+```{r}
+volTest <- getVol(10, SNPret)
+volTest2 <- getVol(30, SNPret)
+volTest3 <- getVol(100, SNPret)
+```
+
+# Plot the results, overlaying the volatility curves on the data.
+```{r}
+plot(volTest, type = "l")
+lines(volTest2, type = "l", col = "red")
+lines(volTest3, type = "l", col = "blue")
+```
