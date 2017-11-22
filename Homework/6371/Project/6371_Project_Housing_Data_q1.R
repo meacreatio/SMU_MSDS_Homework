@@ -28,11 +28,14 @@ fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea + df.filtere
 summary(fit.full)
 vif(fit.full)
 
+scatterplotMatrix(~df.filtered$logSalePrice + df.filtered$LogGrLiveArea + df.filtered$Neighborhood, data=df.crabs)
+
+
+
 
 # create full and reduced models
 fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$logGrLivArea + df.filtered$Neighborhood, data = df.filtered)
 fit.reduced <- lm(df.filtered$logSalePrice ~ df.filtered$GrLivArea, data = df.filtered)
 
-# check if the inclusion of Neighborhood matters -> it does
 anova(fit.full, df.filtered)
 
