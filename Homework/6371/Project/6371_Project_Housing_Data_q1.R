@@ -10,8 +10,11 @@ df.train$PoolQC <- NULL
 df.train$Fence <- NULL
 df.train$FireplaceQu <- NULL
 
-# convert sales to logSales
-df.train$logSalePrice <- log(df.train$SalePrice)
+# handle only NAmes, Edwards, BrkSide
+df.reduced <- df.train[df.train$Neighborhood == "NAmes" | df.train$Neighborhood == "Edwards" | df.train$Neighborhood == "BrkSide", ]
 
-fit.train <- lm(df.train$logSalePrice ~ ., data = df.train)
+# convert sales to logSales
+df.reduced$logSalePrice <- log(df.reduced$SalePrice)
+
+fit.train <- lm(df.reduced$logSalePrice ~ ., data = df.reduced)
 summary(fit.train)
