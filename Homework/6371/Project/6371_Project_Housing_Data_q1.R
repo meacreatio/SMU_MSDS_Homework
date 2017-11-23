@@ -3,6 +3,7 @@ df.train <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.cs
 # handle only NAmes, Edwards, BrkSide
 df.filtered <- df.train[df.train$Neighborhood == "NAmes" | df.train$Neighborhood == "Edwards" | df.train$Neighborhood == "BrkSide", ]
 
+# remove extreme outliers
 df.filtered <- df.filtered[!(df.filtered$Id %in% c(1299,524)), ]
 
 fit.full <- lm(df.filtered$SalePrice ~ df.filtered$GrLivArea + df.filtered$Neighborhood, data = df.filtered)
