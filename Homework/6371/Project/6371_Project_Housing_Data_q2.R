@@ -22,8 +22,6 @@ summary(fit.full2)
 # look at the scatter plots to asset for normality
 df.train2.numeric <- select_if(df.train2, is.numeric)
 
-pairs(df.train2.numeric)
-                  
 df.plots <- melt(df.train2.numeric, "SalePrice")
 
 ggplot(df.plots, aes(value, df.plots$SalePrice)) + 
