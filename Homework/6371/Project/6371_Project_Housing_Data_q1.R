@@ -18,8 +18,7 @@ df.filtered$LogGrLiveArea <- log(df.filtered$GrLivArea)
 fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea + df.filtered$Neighborhood, data = df.filtered)
 summary(fit.full)
 
-# aggregate based on neighborhoods that have a positive impact on house prices relative to the others
-# df.filtered$Neighborhood <- ifelse(df.filtered$Neighborhood == 'NAmes', 1, 0)
+# aggregate based on neighborhoods 
 df.filtered$EncodeN <- ifelse(df.filtered$Neighborhood == "NAmes", 1, 0)
 df.filtered$EncodeE <- ifelse(df.filtered$Neighborhood == "Edwards", 1, 0)
 
