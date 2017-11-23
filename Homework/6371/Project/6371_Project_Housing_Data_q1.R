@@ -27,7 +27,6 @@ olsrr::ols_rpc_plot(fit.full)
 
 # add interaction
 df.filtered$Neighborhood <- as.numeric(df.filtered$Neighborhood)
-df.filtered$int1 <- NULL
 fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea + df.filtered$Neighborhood + df.filtered$Neighborhood : df.filtered$logSalePrice, data = df.filtered)
 summary(fit.full)
 
