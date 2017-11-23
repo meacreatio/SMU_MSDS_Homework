@@ -3,6 +3,8 @@ df.train <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.cs
 # handle only NAmes, Edwards, BrkSide
 df.filtered <- df.train[df.train$Neighborhood == "NAmes" | df.train$Neighborhood == "Edwards" | df.train$Neighborhood == "BrkSide", ]
 
+# df.filtered <- df.filtered[!(df.filtered$Id %in% c(1299,524)), ]
+
 fit.full <- lm(df.filtered$SalePrice ~ df.filtered$GrLivArea + df.filtered$Neighborhood, data = df.filtered)
 summary(fit.full)
 
@@ -16,26 +18,24 @@ df.filtered$LogGrLiveArea <- log(df.filtered$GrLivArea)
 fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea + df.filtered$Neighborhood, data = df.filtered)
 summary(fit.full)
 
+# view the data
+scatterplotMatrix(~df.filtered$logSalePrice + df.filtered$LogGrLiveArea + df.filtered$Neighborhood, data=df.filtered)
+
 # add interaction
 df.filtered$Neighborhood <- as.numeric(df.filtered$Neighborhood)
 df.filtered$int1 <- NULL
 fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea + df.filtered$Neighborhood + df.filtered$Neighborhood : df.filtered$logSalePrice, data = df.filtered)
 summary(fit.full)
 
-# add centering
+# add centering since VIF from interaction is very high
 df.filtered$cent1 <- (df.filtered$logSalePrice - mean(df.filtered$logSalePrice)) * (df.filtered$Neighborhood - mean(df.filtered$Neighborhood))
 fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea + df.filtered$Neighborhood + df.filtered$cent1, data = df.filtered)
 summary(fit.full)
 vif(fit.full)
 
-scatterplotMatrix(~df.filtered$logSalePrice + df.filtered$LogGrLiveArea + df.filtered$Neighborhood, data=df.crabs)
+# compare the two models -> including neighborhood contibutes significantly to the model
+fit.reduced <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea, data = df.filtered)
+anova(fit.full, fit.reduced)
 
 
-
-
-# create full and reduced models
-fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$logGrLivArea + df.filtered$Neighborhood, data = df.filtered)
-fit.reduced <- lm(df.filtered$logSalePrice ~ df.filtered$GrLivArea, data = df.filtered)
-
-anova(fit.full, df.filtered)
 
