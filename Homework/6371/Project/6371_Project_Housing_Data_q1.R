@@ -9,6 +9,9 @@ df.filtered <- df.filtered[!(df.filtered$Id %in% c(1299,524)), ]
 fit.full <- lm(df.filtered$SalePrice ~ df.filtered$GrLivArea + df.filtered$Neighborhood, data = df.filtered)
 summary(fit.full)
 
+# check plots -> need log transform
+scatterplotMatrix(~df.filtered$SalePrice + df.filtered$GrLivArea, data=df.filtered)
+
 # convert sales to logSales
 df.filtered$logSalePrice <- log(df.filtered$SalePrice)
 fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$GrLivArea + df.filtered$Neighborhood, data = df.filtered)
