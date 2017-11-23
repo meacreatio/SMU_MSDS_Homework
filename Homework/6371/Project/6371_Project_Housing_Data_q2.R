@@ -49,21 +49,22 @@ df.train2$WoodDeckSF < log(df.train2$WoodDeckSF)
 df.train2$OpenPorchSF <- log(df.train2$OpenPorchSF)
 df.train2$SalePrice <- log(df.train2$SalePrice)
 
+# remove inf
+df.train2[mapply(is.infinite, df.train2)] <- NA
 
+# TODO create training set
 
-
-
+# choose model 
 df.train2.steps <-na.omit(df.train2)
 fit.steps <- lm(df.train2.steps$SalePrice ~ ., data = df.train2.steps, na.action = na.exclude)
 step(fit.steps, direction="backward")
-fit.backward <- lm(formula = df.train2.steps$SalePrice ~ MSZoning + LotFrontage + 
-                        LotArea + LotShape + LotConfig + Neighborhood + BldgType + 
-                        HouseStyle + OverallQual + OverallCond + YearBuilt + RoofStyle + 
-                        MasVnrType + MasVnrArea + ExterQual + BsmtQual + BsmtExposure + 
-                        BsmtFinSF1 + TotalBsmtSF + CentralAir + X2ndFlrSF + GrLivArea + 
-                        BedroomAbvGr + KitchenQual + GarageYrBlt + GarageCars + OpenPorchSF + 
-                        SaleCondition, data = df.train2.steps, na.action = na.exclude)
+fit.backward <- lm(formula = df.train2.steps$SalePrice ~ LotArea + Neighborhood + 
+                     Condition1 + BldgType + OverallQual + OverallCond + Exterior1st + 
+                     BsmtQual + BsmtUnfSF + TotalBsmtSF + HeatingQC + CentralAir + 
+                     X1stFlrSF + GrLivArea + FullBath + KitchenQual + Fireplaces + 
+                     GarageType + GarageYrBlt + GarageArea + MoSold + SaleCondition, 
+                   data = df.train2.steps, na.action = na.exclude)
 summary(fit.backward)
-vif(fit.backward)
+
 
 
