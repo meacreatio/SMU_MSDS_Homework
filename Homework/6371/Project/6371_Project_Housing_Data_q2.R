@@ -63,20 +63,23 @@ df.train2.steps <-na.omit(df.train2)
 fit.steps <- lm(df.train2.steps$SalePrice ~ ., data = df.train2.steps, na.action = na.exclude)
 
 # backward
-step(fit.steps, direction = "backward", trace = 1)
-fit.backward <- lm(formula = df.train2.steps$SalePrice ~ LotArea + Neighborhood + 
-                     Condition1 + BldgType + OverallQual + OverallCond + Exterior1st + 
-                     BsmtQual + BsmtUnfSF + TotalBsmtSF + HeatingQC + CentralAir + 
-                     X1stFlrSF + GrLivArea + FullBath + KitchenQual + Fireplaces + 
-                     GarageType + GarageYrBlt + GarageArea + MoSold + SaleCondition, 
+olsrr::ols_stepaic_backward(fit.steps, details = T)
+fit.backward <- lm(formula = df.train2.steps$SalePrice ~ MSSubClass + LotArea + LotConfig + Neighborhood 
+                   + Condition1 + BldgType + HouseStyle + OverallQual + Exterior2nd + BsmtQual + BsmtExposure 
+                   + BsmtUnfSF + TotalBsmtSF + CentralAir + Electrical + X1stFlrSF + GrLivArea + FullBath 
+                   + KitchenQual + Fireplaces + GarageType + GarageYrBlt + GarageArea + MoSold + SaleCondition, 
                    data = df.train2.steps, na.action = na.exclude)
 summary(fit.backward)
 
-olsrr::ols_step_forward(fit.steps)
-fit.forward <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GarageCars + GrLivArea + BsmtFinSF1 + BsmtQual 
-                  + Neighborhood + LotArea + MSZoning + TotRmsAbvGrd + LotShape + MasVnrArea, 
+olsrr::ols_stepaic_forward(fit.steps, details = T)
+fit.forward <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + Neighborhood + GarageCars + GrLivArea 
+                  + LotShape + BsmtQual + LotArea + BsmtFinSF1 + OverallCond + GarageType + KitchenQual + YearBuilt 
+                  + TotalBsmtSF + Fireplaces + MoSold + BsmtUnfSF + Condition1 + SaleType + MasVnrArea + X1stFlrSF + HalfBath, 
                   data = df.train2.steps, na.action = na.exclude)
 summary(fit.forward)
 
-
-
+olsrr::ols_stepaic_both(fit.steps, details = T)
+fit.both <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + Neighborhood + GarageCars + GrLivArea + LotShape 
+               + BsmtQual + LotArea + OverallCond + GarageType + KitchenQual + YearBuilt + TotalBsmtSF + Fireplaces 
+               + MoSold + BsmtUnfSF, data = df.train2.steps, na.action = na.exclude)
+summary(fit.both)
