@@ -17,6 +17,9 @@ df.filtered$logSalePrice <- log(df.filtered$SalePrice)
 fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$GrLivArea + df.filtered$Neighborhood, data = df.filtered)
 summary(fit.full)
 
+# account for sqrft in 100's
+df.filtered$GrLivArea <- df.filtered$GrLivArea / 100
+
 #convert to logGrLivArea
 df.filtered$LogGrLiveArea <- log(df.filtered$GrLivArea)
 fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea + df.filtered$Neighborhood, data = df.filtered)
@@ -50,10 +53,6 @@ summary(fit.reduced)
 # compare the two models -> including neighborhood contibutes significantly to the model
 anova(fit.full, fit.reduced)
 
-# use the reduced model
 # view the data
-olsrr::ols_rpc_plot(fit.full)
-
-
 plot(fit.reduced)
-
+olsrr::ols_rsd_hist(fit.reduced)
