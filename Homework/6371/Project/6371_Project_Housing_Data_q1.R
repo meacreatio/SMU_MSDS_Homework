@@ -41,5 +41,5 @@ vif(fit.full)
 fit.reduced <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea, data = df.filtered)
 anova(fit.full, fit.reduced)
 
-
+plot(fit.full)
 
