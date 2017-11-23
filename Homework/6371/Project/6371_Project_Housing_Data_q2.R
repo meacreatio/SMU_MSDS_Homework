@@ -1,4 +1,8 @@
-library("dplyr")
+library(dplyr)
+library(MASS)
+library(olsrr)
+library(car)
+library(caret)
 
 df.train2 <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
   
@@ -20,15 +24,15 @@ fit.full2 <- lm(df.train2$SalePrice ~ ., data = df.train2, na.action = na.exclud
 summary(fit.full2)
 
 # look at the scatter plots to asset for normality ####################
-df.train2.numeric <- select_if(df.train2, is.numeric)
+#df.train2.numeric <- select_if(df.train2, is.numeric)
 
-df.plots <- melt(df.train2.numeric, "SalePrice")
+#df.plots <- melt(df.train2.numeric, "SalePrice")
 
-ggplot(df.plots, aes(value, df.plots$SalePrice)) + 
-  geom_point() + 
-  facet_wrap(~variable, scales = "free")
+#ggplot(df.plots, aes(value, df.plots$SalePrice)) + 
+ # geom_point() + 
+  #facet_wrap(~variable, scales = "free")
 
-hist(df.train2.numeric$SalePrice)
+# hist(df.train2.numeric$SalePrice)
 ######################################################################
 
 # transform values
@@ -57,7 +61,9 @@ df.train2[mapply(is.infinite, df.train2)] <- NA
 # choose model 
 df.train2.steps <-na.omit(df.train2)
 fit.steps <- lm(df.train2.steps$SalePrice ~ ., data = df.train2.steps, na.action = na.exclude)
-step(fit.steps, direction="backward")
+
+# backward
+step(fit.steps, direction = "backward", trace = 1)
 fit.backward <- lm(formula = df.train2.steps$SalePrice ~ LotArea + Neighborhood + 
                      Condition1 + BldgType + OverallQual + OverallCond + Exterior1st + 
                      BsmtQual + BsmtUnfSF + TotalBsmtSF + HeatingQC + CentralAir + 
@@ -65,6 +71,12 @@ fit.backward <- lm(formula = df.train2.steps$SalePrice ~ LotArea + Neighborhood 
                      GarageType + GarageYrBlt + GarageArea + MoSold + SaleCondition, 
                    data = df.train2.steps, na.action = na.exclude)
 summary(fit.backward)
+
+olsrr::ols_step_forward(fit.steps)
+fit.forward <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GarageCars + GrLivArea + BsmtFinSF1 + BsmtQual 
+                  + Neighborhood + LotArea + MSZoning + TotRmsAbvGrd + LotShape + MasVnrArea, 
+                  data = df.train2.steps, na.action = na.exclude)
+summary(fit.forward)
 
 
 
