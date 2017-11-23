@@ -22,7 +22,8 @@ summary(fit.full)
 df.filtered$Neighborhood <- ifelse(df.filtered$Neighborhood == 'NAmes', 1, 0)
 
 # view the data
-scatterplotMatrix(~df.filtered$logSalePrice + df.filtered$LogGrLiveArea + df.filtered$Neighborhood, data=df.filtered)
+olsrr::ols_rpc_plot(fit.full)
+# scatterplotMatrix(~df.filtered$logSalePrice + df.filtered$LogGrLiveArea + df.filtered$Neighborhood, data=df.filtered)
 
 # add interaction
 df.filtered$Neighborhood <- as.numeric(df.filtered$Neighborhood)
