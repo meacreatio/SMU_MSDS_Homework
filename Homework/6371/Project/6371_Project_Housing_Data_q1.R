@@ -21,14 +21,13 @@ summary(fit.full)
 # aggregate based on neighborhoods that have a positive impact on house prices relative to the others
 df.filtered$Neighborhood <- ifelse(df.filtered$Neighborhood == 'NAmes', 1, 0)
 
-# view the data
-olsrr::ols_rpc_plot(fit.full)
 # scatterplotMatrix(~df.filtered$logSalePrice + df.filtered$LogGrLiveArea + df.filtered$Neighborhood, data=df.filtered)
 
 # add interaction
 df.filtered$Neighborhood <- as.numeric(df.filtered$Neighborhood)
 fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea + df.filtered$Neighborhood + df.filtered$Neighborhood : df.filtered$logSalePrice, data = df.filtered)
 summary(fit.full)
+vif(fit.full)
 
 # add centering since VIF from interaction is very high
 df.filtered$cent1 <- (df.filtered$logSalePrice - mean(df.filtered$logSalePrice)) * (df.filtered$Neighborhood - mean(df.filtered$Neighborhood))
@@ -36,8 +35,11 @@ fit.full <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea + df.filtere
 summary(fit.full)
 vif(fit.full)
 
+# view the data
+olsrr::ols_rpc_plot(fit.full)
+
 # compare the two models -> including neighborhood contibutes significantly to the model
-fit.reduced <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea, data = df.filtered)
+fit.reduced <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea + df.filtered$Neighborhood, data = df.filtered)
 anova(fit.full, fit.reduced)
 
 plot(fit.full)
