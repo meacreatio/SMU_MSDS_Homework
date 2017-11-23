@@ -1,3 +1,5 @@
+df.train <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
+
 # remove variables with near zero variance
 df.train <- df.train[-nearZeroVar(df.train)]
 
