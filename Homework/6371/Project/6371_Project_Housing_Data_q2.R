@@ -75,7 +75,7 @@ df.train2$WoodDeckSF <- NULL
 df.train2[mapply(is.infinite, df.train2)] <- NA
 
 # choose model 
-df.train2.steps <-na.omit(df.train2)
+df.train2.steps <- df.train2
 fit.steps <- lm(df.train2.steps$SalePrice ~ ., data = df.train2.steps, na.action = na.exclude)
 
 # backward
@@ -94,7 +94,7 @@ fit.both <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GrLivArea + T
 summary(fit.both)
 
 # manual fit
-df.train2.manual <- na.omit(df.train2)
+df.train2.manual <- df.train2
 
 df.train2.manual$EncodeLotShape <- as.numeric(df.train2.manual$LotShape)
 df.train2.manual$EncodeNeighborhood <- ifelse(df.train2.manual$Neighborhood == "NoRidge" | df.train2.manual$Neighborhood == "NridgHt" 
@@ -104,6 +104,7 @@ df.train2.manual$EncodeBsmtExposure <- ifelse(df.train2.manual$BsmtExposure == "
 df.train2.manual$EncodeKitchenQual <- ifelse(df.train2.manual$KitchenQual == "TA", 1, 0)
 df.train2.manual$EncodeBsmtQual <- ifelse(df.train2.manual$BsmtQual == "Gd" | df.train2.manual$BsmtQual == "Fa", 1, 0)
 df.train2.manual$BathToRoom <- (df.train2.manual$FullBath + df.train2.manual$HalfBath + df.train2.manual$BsmtHalfBath + df.train2.manual$BsmtFullBath) / df.train2.manual$BedroomAbvGr
+df.train2.manual[mapply(is.infinite, df.train2.manual)] <- NA
 
 # add interaction
 # df.train2.manual$int1 <- df.train2.manual$EncodeNeighborhood * df.train2.manual$OverallQual
