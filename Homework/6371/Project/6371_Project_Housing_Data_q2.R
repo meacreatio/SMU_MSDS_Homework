@@ -64,7 +64,6 @@ v <- sapply(X = df.train2$X2ndFlrSF, function(x) {
 df.train2$X2ndFlrSF <- v
 
 df.train2$GrLivArea <- log(df.train2$GrLivArea)
-df.train2$GarageYrBlt <- log(df.train2$GarageYrBlt)
 df.train2$GarageArea <- log(df.train2$GarageArea)
 df.train2$SalePrice <- log(df.train2$SalePrice)
 
