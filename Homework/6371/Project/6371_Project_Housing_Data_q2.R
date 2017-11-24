@@ -14,15 +14,6 @@ df.train2 <- df.train2[!(df.train2$Id %in% c(1299, 524)), ]
 # remove variables with near zero variance
 df.train2 <- df.train2[-nearZeroVar(df.train2)]
 
-# get train and test
-set.seed(101) 
-sample = sample.split(df.train2, SplitRatio = .8)
-
-train = subset(df.train2, sample == TRUE)
-test  = subset(df.train2, sample == FALSE)
-
-df.train2 <- train
-
 # find high rate of missing values and remove those variables
 colSums(is.na(df.train2))
 df.train2$Alley <- NULL
@@ -69,6 +60,17 @@ df.train2$SalePrice <- log(df.train2$SalePrice)
 
 df.train2$OpenPorchSF <- NULL
 df.train2$WoodDeckSF <- NULL
+
+
+# get train and test
+set.seed(101) 
+train.size <- 0.8
+train.index <- sample.int(length(df.train2$SalePrice), round(length(df.train2$SalePrice) * train.size))
+
+train = df.train2[train.index, ]
+test  = df.train2[-train.index, ]
+
+df.train2 <- train
 
 # remove inf
 df.train2[mapply(is.infinite, df.train2)] <- NA
