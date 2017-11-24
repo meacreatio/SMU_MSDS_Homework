@@ -133,7 +133,7 @@ fit.forward <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GrLivArea 
                   data = df.train2.steps, na.action = na.exclude)
 summary(fit.forward)
 
-olsrr::ols_stepaic_both(fit.steps, details = T)
+# olsrr::ols_stepaic_both(fit.steps, details = T)
 fit.both <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GrLivArea + Neighborhood + BsmtFullBath + OverallCond + GarageCars 
                + TotalBsmtSF + YearBuilt + LotArea + MSZoning + BsmtUnfSF + SaleCondition + KitchenQual + Condition1 + Exterior1st 
                + CentralAir + BsmtExposure + BldgType + Foundation + Fireplaces + BsmtQual + LotShape + YearRemodAdd + LotConfig + FullBath 
