@@ -131,7 +131,8 @@ df.train2.manual[mapply(is.infinite, df.train2.manual)] <- NA
 
 fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual  
                   + df.train2.manual$EncodeBsmtQual + df.train2.manual$EncodeBsmtExposure + GrLivArea + TotalBsmtSF
-                 + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning + df.train2.manual$EncodeBldgType + EncodeHouseStyle, 
+                 + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning + df.train2.manual$EncodeBldgType + EncodeHouseStyle 
+                 + OverallCond, 
                  data = df.train2.manual, na.action = na.exclude)
 summary(fit.manual)
 
