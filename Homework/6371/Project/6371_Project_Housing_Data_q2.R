@@ -133,3 +133,5 @@ fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual
                  data = df.train2.manual, na.action = na.exclude)
 summary(fit.manual)
 vif(fit.manual)
+plot(fit.manual)
+hist(fit.manual$residuals)
