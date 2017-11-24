@@ -131,6 +131,7 @@ fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual
                  + OverallCond + MasVnrType + df.train2.manual$EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
                  + GarageCars + df.train2.manual$EncodeSaleType + df.train2.manual$EncodedSaleCondition, 
                  data = df.train2.manual, na.action = na.exclude)
+
 summary(fit.manual)
 vif(fit.manual)
 plot(fit.manual)
