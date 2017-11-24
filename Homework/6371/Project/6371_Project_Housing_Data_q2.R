@@ -116,7 +116,7 @@ df.train2.manual$EncodeNeighborhood <- ifelse(df.train2.manual$Neighborhood == "
 df.train2.manual$EncodeHouseStyle <- ifelse(df.train2.manual$HouseStyle == "1Story", 1, 0)
 df.train2.manual$EncodeBsmtExposure <- ifelse(df.train2.manual$BsmtExposure == "Gd", 1, 0)
 df.train2.manual$EncodeKitchenQual <- ifelse(df.train2.manual$KitchenQual == "TA", 1, 0)
-df.train2.manual$EncodeBsmtQual <- ifelse(df.train2.manual$BsmtQual == "Gd" | df.train2.manual$BsmtQual == "Fa", 1, 0)
+df.train2.manual$EncodeBsmtQual <- ifelse(df.train2.manual$BsmtQual == "Gd" | df.train2.manual$BsmtQual == "TA", 1, 0)
 df.train2.manual$BathToRoom <- (df.train2.manual$FullBath + df.train2.manual$HalfBath + df.train2.manual$BsmtHalfBath 
                                 + df.train2.manual$BsmtFullBath) / df.train2.manual$BedroomAbvGr
 df.train2.manual$EncodeBldgType <- ifelse(df.train2.manual$BldgType == "Duplex", 1, 0)
