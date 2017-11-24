@@ -136,4 +136,4 @@ fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual
                  + GarageCars + df.train2.manual$EncodeSaleType + df.train2.manual$EncodedSaleCondition, 
                  data = df.train2.manual, na.action = na.exclude)
 summary(fit.manual)
-
+vif(fit.manual)
