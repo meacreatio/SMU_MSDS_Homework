@@ -123,7 +123,6 @@ df.train2.manual$EncodeBldgType <- ifelse(df.train2.manual$BldgType == "Duplex",
 df.train2.manual$EncodeHouseStyle <- ifelse(df.train2.manual$HouseStyle == "1.5Unf" | df.train2.manual$HouseStyle == "1Story" 
                                             | df.train2.manual$HouseStyle == "SFoyer" | df.train2.manual$HouseStyle == "SLvl", 1, 0)
 
-
 df.train2.manual[mapply(is.infinite, df.train2.manual)] <- NA
 
 # add interaction
@@ -132,7 +131,7 @@ df.train2.manual[mapply(is.infinite, df.train2.manual)] <- NA
 fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual  
                   + df.train2.manual$EncodeBsmtQual + df.train2.manual$EncodeBsmtExposure + GrLivArea + TotalBsmtSF
                  + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning + df.train2.manual$EncodeBldgType + EncodeHouseStyle 
-                 + OverallCond, 
+                 + OverallCond + MasVnrType, 
                  data = df.train2.manual, na.action = na.exclude)
 summary(fit.manual)
 
