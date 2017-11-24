@@ -66,9 +66,10 @@ df.train2$X2ndFlrSF <- v
 df.train2$GrLivArea <- log(df.train2$GrLivArea)
 df.train2$GarageYrBlt <- log(df.train2$GarageYrBlt)
 df.train2$GarageArea <- log(df.train2$GarageArea)
-df.train2$WoodDeckSF < log(df.train2$WoodDeckSF)
-df.train2$OpenPorchSF <- log(df.train2$OpenPorchSF)
 df.train2$SalePrice <- log(df.train2$SalePrice)
+
+df.train2$OpenPorchSF <- NULL
+df.train2$WoodDeckSF <- NULL
 
 # remove inf
 df.train2[mapply(is.infinite, df.train2)] <- NA
