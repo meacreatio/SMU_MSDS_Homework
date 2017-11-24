@@ -127,14 +127,58 @@ df.train2.manual$EncodeSaleType <- ifelse(df.train2.manual$SaleType == 'ConLD' |
 df.train2.manual$EncodedSaleCondition <- ifelse(df.train2.manual$SaleCondition == 'Normal' | df.train2.manual$SaleType == 'Alloca', 1, 0)
 df.train2.manual[mapply(is.infinite, df.train2.manual)] <- NA
 
-fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual  
-                  + df.train2.manual$EncodeBsmtQual + df.train2.manual$EncodeBsmtExposure + GrLivArea + TotalBsmtSF
-                 + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning + df.train2.manual$EncodeBldgType 
-                 + OverallCond + MasVnrType + df.train2.manual$EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
-                 + GarageCars + df.train2.manual$EncodeSaleType + df.train2.manual$EncodedSaleCondition, 
+modifyData <- function(df) {
+  df$EncodeLotShape <- as.numeric(df$LotShape)
+  df$EncodeNeighborhood <- ifelse(df$Neighborhood == "MeadowV", 1, 0)
+  df$EncodeHouseStyle <- ifelse(df$HouseStyle == "1Story", 1, 0)
+  df$EncodeBsmtExposure <- ifelse(df$BsmtExposure == "Gd", 1, 0)
+  df$EncodeKitchenQual <- ifelse(df$KitchenQual == "TA", 1, 0)
+  df$EncodeBsmtQual <- ifelse(df$BsmtQual == "Gd" | df$BsmtQual == "TA", 1, 0)
+  df$BathToRoom <- (df$FullBath + df$HalfBath + df$BsmtHalfBath 
+                                  + df$BsmtFullBath) / df$BedroomAbvGr
+  df$EncodeBldgType <- ifelse(df$BldgType == "Duplex", 1, 0)
+  df$EncodeHouseStyle <- ifelse(df$HouseStyle == "1Story" | df$HouseStyle == "SFoyer", 1, 0)
+  df$EncodedFoundation <- ifelse(df$Foundation == "CBlock", 0, 1)
+  df$EncodeSaleType <- ifelse(df$SaleType == 'ConLD' | df$SaleType == 'New', 1, 0)
+  df$EncodedSaleCondition <- ifelse(df$SaleCondition == 'Normal' | df$SaleType == 'Alloca', 1, 0)
+  df[mapply(is.infinite, df)] <- NA
+  df
+}
+fit.manual <- lm(formula = SalePrice ~ LotArea + OverallQual  
+                  + EncodeBsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF
+                 + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning + EncodeBldgType 
+                 + OverallCond + MasVnrType + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
+                 + GarageCars + EncodeSaleType + EncodedSaleCondition, 
                  data = df.train2.manual, na.action = na.exclude)
 
 summary(fit.manual)
 vif(fit.manual)
 plot(fit.manual)
 hist(fit.manual$residuals)
+
+
+# generate predictions
+df.train2.manual$PredPrice <- predict(fit.manual)
+test <- modifyData(test)
+test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(SalePrice,LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,EncodeBldgType,OverallCond,MasVnrType,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+
+train.corr <- cor(df.train2.manual$PredPrice, df.train2.manual$SalePrice)
+train.RMSE <- sqrt(mean((df.train2.manual$PredPrice - df.train2.manual$SalePrice) ^2, na.rm=TRUE))
+
+test.RMSE <- sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
