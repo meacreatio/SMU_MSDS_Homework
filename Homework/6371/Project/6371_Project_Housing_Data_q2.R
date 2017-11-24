@@ -6,9 +6,9 @@ library(caret)
 library(caTools)
 
 cleanData <- function(df) {
-  df <- df[df$LotShape != 'IR3', ] 
+  # df <- df[df$LotShape != 'IR3', ] 
   # remove extreme outliers
-  df <- df[!(df$Id %in% c(1299, 524)), ]
+  # df <- df[!(df$Id %in% c(1299, 524)), ]
   
   # remove variables with near zero variance
   df <- df[-nearZeroVar(df)]
@@ -24,7 +24,7 @@ cleanData <- function(df) {
   df
 }
 
-transformData <- function(df) {
+transformData <- function(df, isTest = F) {
   df$LotFrontage <- log(df$LotFrontage)
   df$LotArea <- log(df$LotArea)
   df$MasVnrArea <- log(df$MasVnrArea)
@@ -44,7 +44,12 @@ transformData <- function(df) {
   
   df$GrLivArea <- log(df$GrLivArea)
   df$GarageArea <- log(df$GarageArea)
-  df$SalePrice <- log(df$SalePrice)
+  if(isTest == F) {
+    df$SalePrice <- log(df$SalePrice)
+  }
+  
+  df[mapply(is.infinite, df)] <- NA
+  
   df
 }
 
@@ -67,7 +72,7 @@ encodeData <- function(df) {
 }
 
 df.train2 <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
-
+df.test <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/testCleaned.csv")
 ## clean data
 df.train2 <- cleanData(df.train2)
 
@@ -154,20 +159,25 @@ plot(fit.manual)
 hist(fit.manual$residuals)
 
 
-# generate predictions
-
-df.train2.manual$PredPrice <- predict(fit.manual)
-
-train.corr <- cor(df.train2.manual$PredPrice, df.train2.manual$SalePrice)
-train.RMSE <- sqrt(mean((df.train2.manual$PredPrice - df.train2.manual$SalePrice) ^2, na.rm=TRUE))
-
+# alpha precitions for pre-validation
 test <- encodeData(test)
-test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(SalePrice,LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,EncodeBldgType,OverallCond,MasVnrType,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,EncodeBldgType,OverallCond,MasVnrType,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
 test.RMSE <- sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
 
+# clean, transform, encode test data
+df.test <- cleanData(df.test)
+df.test <- transformData(df.test, isTest = T)
+df.test <- encodeData(df.test)
 
+# generate predictions
+df.test$PredPrice <- predict(fit.manual, newdata = subset(df.test, select = c(LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,EncodeBldgType,OverallCond,MasVnrType,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+df.test$SalePrice <- exp(df.test$PredPrice)
 
-
+# create kaggle data frame
+kaggleColumns <- c("Id", "SalePrice")
+df.kaggle <- df.test[kaggleColumns]
+df.kaggle[mapply(is.na, df.kaggle)] <- exp(mean(df.train2.manual$SalePrice, na.rm=TRUE))
+write.csv(x = df.kaggle, file = "~/Desktop/meacreatio_housing.csv", row.names = F)
 
 
 
