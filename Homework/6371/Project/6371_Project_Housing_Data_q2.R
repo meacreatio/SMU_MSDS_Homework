@@ -112,13 +112,15 @@ summary(fit.both)
 df.train2.manual <- df.train2
 
 df.train2.manual$EncodeLotShape <- as.numeric(df.train2.manual$LotShape)
-df.train2.manual$EncodeNeighborhood <- ifelse(df.train2.manual$Neighborhood == "NoRidge" | df.train2.manual$Neighborhood == "NridgHt" 
-                                        | df.train2.manual$Neighborhood == "StoneBr", 1, 0)
+df.train2.manual$EncodeNeighborhood <- ifelse(df.train2.manual$Neighborhood == "MeadowV", 1, 0)
 df.train2.manual$EncodeHouseStyle <- ifelse(df.train2.manual$HouseStyle == "1Story", 1, 0)
 df.train2.manual$EncodeBsmtExposure <- ifelse(df.train2.manual$BsmtExposure == "Gd", 1, 0)
 df.train2.manual$EncodeKitchenQual <- ifelse(df.train2.manual$KitchenQual == "TA", 1, 0)
 df.train2.manual$EncodeBsmtQual <- ifelse(df.train2.manual$BsmtQual == "Gd" | df.train2.manual$BsmtQual == "Fa", 1, 0)
 df.train2.manual$BathToRoom <- (df.train2.manual$FullBath + df.train2.manual$HalfBath + df.train2.manual$BsmtHalfBath + df.train2.manual$BsmtFullBath) / df.train2.manual$BedroomAbvGr
+df.train2.manual$EncodeBldgType <- ifelse(df.train2.manual$BldgType == "Duplex", 1, 0)
+
+
 df.train2.manual[mapply(is.infinite, df.train2.manual)] <- NA
 
 # add interaction
@@ -126,7 +128,7 @@ df.train2.manual[mapply(is.infinite, df.train2.manual)] <- NA
 
 fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual  
                   + df.train2.manual$EncodeBsmtQual + df.train2.manual$EncodeBsmtExposure + GrLivArea + TotalBsmtSF
-                 + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning, 
+                 + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning + df.train2.manual$EncodeBldgType, 
                  data = df.train2.manual, na.action = na.exclude)
 summary(fit.manual)
 
