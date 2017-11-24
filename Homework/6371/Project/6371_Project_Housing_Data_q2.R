@@ -3,15 +3,25 @@ library(MASS)
 library(olsrr)
 library(car)
 library(caret)
+library(caTools)
 
 df.train2 <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
+
 df.train2 <- df.train2[df.train2$LotShape != 'IR3', ] 
 # remove extreme outliers
 df.train2 <- df.train2[!(df.train2$Id %in% c(1299, 524)), ]
 
 # remove variables with near zero variance
-library(caret)
 df.train2 <- df.train2[-nearZeroVar(df.train2)]
+
+# get train and test
+set.seed(101) 
+sample = sample.split(df.train2, SplitRatio = .8)
+
+train = subset(df.train2, sample == TRUE)
+test  = subset(df.train2, sample == FALSE)
+
+df.train2 <- train
 
 # find high rate of missing values and remove those variables
 colSums(is.na(df.train2))
