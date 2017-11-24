@@ -123,7 +123,7 @@ df.train2.manual$EncodeBldgType <- ifelse(df.train2.manual$BldgType == "Duplex",
 df.train2.manual$EncodeHouseStyle <- ifelse(df.train2.manual$HouseStyle == "1Story" | df.train2.manual$HouseStyle == "SFoyer", 1, 0)
 df.train2.manual$EncodedFoundation <- ifelse(df.train2.manual$Foundation == "CBlock", 0, 1)
 df.train2.manual$EncodeSaleType <- ifelse(df.train2.manual$SaleType == 'ConLD' | df.train2.manual$SaleType == 'New', 1, 0)
-
+df.train2.manual$EncodedSaleCondition <- ifelse(df.train2.manual$SaleCondition == 'Normal' | df.train2.manual$SaleType == 'Alloca', 1, 0)
 df.train2.manual[mapply(is.infinite, df.train2.manual)] <- NA
 
 # add interaction
@@ -133,7 +133,7 @@ fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual
                   + df.train2.manual$EncodeBsmtQual + df.train2.manual$EncodeBsmtExposure + GrLivArea + TotalBsmtSF
                  + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning + df.train2.manual$EncodeBldgType 
                  + OverallCond + MasVnrType + df.train2.manual$EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
-                 + GarageCars + df.train2.manual$EncodeSaleType, 
+                 + GarageCars + df.train2.manual$EncodeSaleType + df.train2.manual$EncodedSaleCondition, 
                  data = df.train2.manual, na.action = na.exclude)
 summary(fit.manual)
 
