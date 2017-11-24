@@ -70,7 +70,7 @@ train.index <- sample.int(length(df.train2$SalePrice), round(length(df.train2$Sa
 train = df.train2[train.index, ]
 test  = df.train2[-train.index, ]
 
-df.train2 <- train
+# df.train2 <- train
 
 # remove inf
 df.train2[mapply(is.infinite, df.train2)] <- NA
