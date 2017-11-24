@@ -48,8 +48,6 @@ summary(fit.full2)
 # transform values
 df.train2$LotFrontage <- log(df.train2$LotFrontage)
 df.train2$LotArea <- log(df.train2$LotArea)
-df.train2$YearBuilt <- log(df.train2$YearBuilt)
-df.train2$YearRemodAdd <- log(df.train2$YearRemodAdd)
 df.train2$MasVnrArea <- log(df.train2$MasVnrArea)
 df.train2$BsmtFinSF1 <- log(df.train2$BsmtFinSF1)
 df.train2$BsmtUnfSf <- log(df.train2$BsmtUnfSF)
@@ -83,24 +81,17 @@ fit.steps <- lm(df.train2.steps$SalePrice ~ ., data = df.train2.steps, na.action
 
 # backward
 olsrr::ols_stepaic_backward(fit.steps, details = T)
-fit.backward <- lm(formula = df.train2.steps$SalePrice ~ MSSubClass + LotArea + LotConfig + Neighborhood 
-                   + Condition1 + BldgType + HouseStyle + OverallQual + Exterior2nd + BsmtQual + BsmtExposure 
-                   + BsmtUnfSF + TotalBsmtSF + CentralAir + Electrical + X1stFlrSF + GrLivArea + FullBath 
-                   + KitchenQual + Fireplaces + GarageType + GarageYrBlt + GarageArea + MoSold + SaleCondition, 
+fit.backward <- lm(df.train2.steps$SalePrice ~ MSSubClass + LotArea + LotShape + LotConfig + Condition1 + BldgType + OverallQual + OverallCond + YearBuilt + Exterior2nd + MasVnrType + BsmtQual + BsmtExposure + BsmtUnfSF + TotalBsmtSF + X1stFlrSF + X2ndFlrSF + GrLivArea + BsmtHalfBath + FullBath + BedroomAbvGr + Fireplaces + GarageYrBlt + GarageCars + PavedDrive + WoodDeckSF + OpenPorchSF + SaleCondition, 
                    data = df.train2.steps, na.action = na.exclude)
 summary(fit.backward)
 
 olsrr::ols_stepaic_forward(fit.steps, details = T)
-fit.forward <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + Neighborhood + GarageCars + GrLivArea 
-                  + LotShape + BsmtQual + LotArea + BsmtFinSF1 + OverallCond + GarageType + KitchenQual + YearBuilt 
-                  + TotalBsmtSF + Fireplaces + MoSold + BsmtUnfSF + Condition1 + SaleType + MasVnrArea + X1stFlrSF + HalfBath, 
+fit.forward <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GrLivArea + TotalBsmtSF + BsmtUnfSF + GarageCars + SaleCondition + BedroomAbvGr + LotArea + YearRemodAdd + BsmtExposure + MSSubClass + BsmtQual + YearBuilt + MSZoning + OverallCond + BsmtHalfBath + ExterCond + BldgType + GarageYrBlt + BsmtFullBath + LotConfig + FullBath + Exterior2nd + Condition1 + X2ndFlrSF + Electrical + GarageFinish + Fireplaces, 
                   data = df.train2.steps, na.action = na.exclude)
 summary(fit.forward)
 
 olsrr::ols_stepaic_both(fit.steps, details = T)
-fit.both <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + Neighborhood + GarageCars + GrLivArea + LotShape 
-               + BsmtQual + LotArea + OverallCond + GarageType + KitchenQual + YearBuilt + TotalBsmtSF + Fireplaces 
-               + MoSold + BsmtUnfSF, data = df.train2.steps, na.action = na.exclude)
+fit.both <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GrLivArea + TotalBsmtSF + BsmtUnfSF + SaleCondition + BedroomAbvGr + LotArea + BsmtExposure + MSSubClass + BsmtQual + YearBuilt + MSZoning + OverallCond + BsmtFinType1 + Fireplaces, data = df.train2.steps, na.action = na.exclude)
 summary(fit.both)
 
 # manual fit
@@ -120,7 +111,7 @@ df.train2.manual$BathToRoom <- (df.train2.manual$FullBath + df.train2.manual$Hal
 
 fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual  
                   + df.train2.manual$EncodeBsmtQual + df.train2.manual$EncodeBsmtExposure + GrLivArea + TotalBsmtSF
-                 + BsmtUnfSF + GarageYrBlt + BathToRoom, 
+                 + BsmtUnfSF + BathToRoom + YearBuilt, 
                  data = df.train2.manual, na.action = na.exclude)
 summary(fit.manual)
 
