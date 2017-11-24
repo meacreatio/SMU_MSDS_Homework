@@ -133,12 +133,12 @@ fit.forward <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GrLivArea 
                   data = df.train2.steps, na.action = na.exclude)
 summary(fit.forward)
 
-# olsrr::ols_stepaic_both(fit.steps, details = T)
-fit.both <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GrLivArea + Neighborhood + TotalBsmtSF 
-               + OverallCond + GarageArea + BsmtUnfSF + YearBuilt + LotArea + MSZoning + KitchenQual + SaleCondition 
-               + SaleType + BsmtExposure + BldgType + Condition1 + BsmtQual + Fireplaces + Exterior1st + Foundation 
-               + CentralAir + GarageCars + MasVnrType + YearRemodAdd + BsmtFullBath + HalfBath + YrSold + LotConfig 
-               + ExterCond + PavedDrive + TotRmsAbvGrd, data = df.train2.steps, na.action = na.exclude)
+olsrr::ols_stepaic_both(fit.steps, details = T)
+fit.both <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GrLivArea + Neighborhood + BsmtFullBath + OverallCond + GarageCars 
+               + TotalBsmtSF + YearBuilt + LotArea + MSZoning + BsmtUnfSF + SaleCondition + KitchenQual + Condition1 + Exterior1st 
+               + CentralAir + BsmtExposure + BldgType + Foundation + Fireplaces + BsmtQual + LotShape + YearRemodAdd + LotConfig + FullBath 
+               + HalfBath + HouseStyle + X1stFlrSF + SaleType + BsmtFinType1 + YrSold + PavedDrive + HeatingQC, 
+               data = df.train2.steps, na.action = na.exclude)
 summary(fit.both)
 
 # manual fit
@@ -178,7 +178,6 @@ kaggleColumns <- c("Id", "SalePrice")
 df.kaggle <- df.test[kaggleColumns]
 df.kaggle[mapply(is.na, df.kaggle)] <- exp(mean(df.train2.manual$SalePrice, na.rm=TRUE))
 write.csv(x = df.kaggle, file = "~/Desktop/meacreatio_housing.csv", row.names = F)
-
 
 
 
