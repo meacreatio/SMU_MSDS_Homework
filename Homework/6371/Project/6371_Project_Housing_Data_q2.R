@@ -94,12 +94,14 @@ df.train2.manual$EncodeHouseStyle <- ifelse(df.train2.manual$HouseStyle == "1Sto
 df.train2.manual$EncodeBsmtExposure <- ifelse(df.train2.manual$BsmtExposure == "Gd", 1, 0)
 df.train2.manual$EncodeKitchenQual <- ifelse(df.train2.manual$KitchenQual == "TA", 1, 0)
 df.train2.manual$EncodeBsmtQual <- ifelse(df.train2.manual$BsmtQual == "Gd" | df.train2.manual$BsmtQual == "Fa", 1, 0)
+df.train2.manual$BathToRoom <- (df.train2.manual$FullBath + df.train2.manual$HalfBath + df.train2.manual$BsmtHalfBath + df.train2.manual$BsmtFullBath) / df.train2.manual$BedroomAbvGr
+
 
 # add interaction
 # df.train2.manual$int1 <- df.train2.manual$EncodeNeighborhood * df.train2.manual$OverallQual
 
 fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual  
                   + df.train2.manual$EncodeBsmtQual + df.train2.manual$EncodeBsmtExposure + GrLivArea + TotalBsmtSF
-                 + BsmtUnfSF + GarageYrBlt, 
+                 + BsmtUnfSF + GarageYrBlt + BathToRoom, 
                  data = df.train2.manual, na.action = na.exclude)
 summary(fit.manual)
