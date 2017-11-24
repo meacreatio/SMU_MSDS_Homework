@@ -45,7 +45,16 @@ df.train2$BsmtFinSF1 <- log(df.train2$BsmtFinSF1)
 df.train2$BsmtUnfSf <- log(df.train2$BsmtUnfSF)
 df.train2$TotalBsmtSF <- log(df.train2$TotalBsmtSF)
 df.train2$X1stFlrSF <- log(df.train2$X1stFlrSF)
-df.train2$X2stFlrSF <- log(df.train2$X2stFlrSF)
+
+v <- sapply(X = df.train2$X2ndFlrSF, function(x) {
+  value = 0
+  if (x != 0) {
+    value = log(x)
+  }
+  value
+})
+df.train2$X2ndFlrSF <- v
+
 df.train2$GrLivArea <- log(df.train2$GrLivArea)
 df.train2$GarageYrBlt <- log(df.train2$GarageYrBlt)
 df.train2$GarageArea <- log(df.train2$GarageArea)
@@ -96,7 +105,6 @@ df.train2.manual$EncodeKitchenQual <- ifelse(df.train2.manual$KitchenQual == "TA
 df.train2.manual$EncodeBsmtQual <- ifelse(df.train2.manual$BsmtQual == "Gd" | df.train2.manual$BsmtQual == "Fa", 1, 0)
 df.train2.manual$BathToRoom <- (df.train2.manual$FullBath + df.train2.manual$HalfBath + df.train2.manual$BsmtHalfBath + df.train2.manual$BsmtFullBath) / df.train2.manual$BedroomAbvGr
 
-
 # add interaction
 # df.train2.manual$int1 <- df.train2.manual$EncodeNeighborhood * df.train2.manual$OverallQual
 
@@ -105,3 +113,4 @@ fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual
                  + BsmtUnfSF + GarageYrBlt + BathToRoom, 
                  data = df.train2.manual, na.action = na.exclude)
 summary(fit.manual)
+
