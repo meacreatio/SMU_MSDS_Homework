@@ -121,7 +121,7 @@ df.train2.manual$BathToRoom <- (df.train2.manual$FullBath + df.train2.manual$Hal
                                 + df.train2.manual$BsmtFullBath) / df.train2.manual$BedroomAbvGr
 df.train2.manual$EncodeBldgType <- ifelse(df.train2.manual$BldgType == "Duplex", 1, 0)
 df.train2.manual$EncodeHouseStyle <- ifelse(df.train2.manual$HouseStyle == "1.5Unf" | df.train2.manual$HouseStyle == "1Story" 
-                                            | df.train2.manual$HouseStyle == "SFoyer", 1, 0)
+                                            | df.train2.manual$HouseStyle == "SFoyer" | df.train2.manual$HouseStyle == "SLvl", 1, 0)
 
 
 df.train2.manual[mapply(is.infinite, df.train2.manual)] <- NA
