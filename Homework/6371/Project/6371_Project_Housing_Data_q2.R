@@ -114,7 +114,7 @@ df.train2.steps <- df.train2
 fit.steps <- lm(df.train2.steps$SalePrice ~ ., data = df.train2.steps, na.action = na.exclude)
 
 # backward
-olsrr::ols_stepaic_backward(fit.steps, details = T)
+# olsrr::ols_stepaic_backward(fit.steps, details = T)
 fit.backward <- lm(df.train2.steps$SalePrice ~ MSSubClass + MSZoning + LotArea + LotConfig
                    + Neighborhood + Condition1 + BldgType + HouseStyle + OverallQual 
                    + OverallCond + YearBuilt + YearRemodAdd + Exterior1st + MasVnrType 
@@ -124,7 +124,7 @@ fit.backward <- lm(df.train2.steps$SalePrice ~ MSSubClass + MSZoning + LotArea +
                    + SaleType + SaleCondition, data = df.train2.steps, na.action = na.exclude)
 summary(fit.backward)
 
-olsrr::ols_stepaic_forward(fit.steps, details = T)
+# olsrr::ols_stepaic_forward(fit.steps, details = T)
 fit.forward <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GrLivArea + Neighborhood + TotalBsmtSF 
                   + OverallCond + GarageArea + BsmtUnfSF + YearBuilt + LotArea + MSZoning + KitchenQual 
                   + SaleCondition + SaleType + BsmtExposure + BldgType + Condition1 + BsmtQual + Fireplaces 
@@ -133,7 +133,7 @@ fit.forward <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GrLivArea 
                   data = df.train2.steps, na.action = na.exclude)
 summary(fit.forward)
 
-olsrr::ols_stepaic_both(fit.steps, details = T)
+# olsrr::ols_stepaic_both(fit.steps, details = T)
 fit.both <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GrLivArea + Neighborhood + TotalBsmtSF 
                + OverallCond + GarageArea + BsmtUnfSF + YearBuilt + LotArea + MSZoning + KitchenQual + SaleCondition 
                + SaleType + BsmtExposure + BldgType + Condition1 + BsmtQual + Fireplaces + Exterior1st + Foundation 
