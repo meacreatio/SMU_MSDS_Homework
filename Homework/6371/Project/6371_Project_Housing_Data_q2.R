@@ -93,11 +93,13 @@ df.train2.manual$EncodeNeighborhood <- ifelse(df.train2.manual$Neighborhood == "
 df.train2.manual$EncodeHouseStyle <- ifelse(df.train2.manual$HouseStyle == "1Story", 1, 0)
 df.train2.manual$EncodeBsmtExposure <- ifelse(df.train2.manual$BsmtExposure == "Gd", 1, 0)
 df.train2.manual$EncodeKitchenQual <- ifelse(df.train2.manual$KitchenQual == "TA", 1, 0)
+df.train2.manual$EncodeBsmtQual <- ifelse(df.train2.manual$BsmtQual == "Gd" | df.train2.manual$BsmtQual == "Fa", 1, 0)
 
 # add interaction
 # df.train2.manual$int1 <- df.train2.manual$EncodeNeighborhood * df.train2.manual$OverallQual
 
-fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual + df.train2.manual$EncodeKitchenQual 
-                 + GarageCars + df.train2.manual$BsmtQual + df.train2.manual$EncodeBsmtExposure + GrLivArea, 
+fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual  
+                  + df.train2.manual$EncodeBsmtQual + df.train2.manual$EncodeBsmtExposure + GrLivArea + TotalBsmtSF
+                 + BsmtUnfSF + GarageYrBlt, 
                  data = df.train2.manual, na.action = na.exclude)
 summary(fit.manual)
