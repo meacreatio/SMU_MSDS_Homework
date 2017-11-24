@@ -5,21 +5,71 @@ library(car)
 library(caret)
 library(caTools)
 
+cleanData <- function(df) {
+  df <- df[df$LotShape != 'IR3', ] 
+  # remove extreme outliers
+  df <- df[!(df$Id %in% c(1299, 524)), ]
+  
+  # remove variables with near zero variance
+  df <- df[-nearZeroVar(df)]
+  
+  # find high rate of missing values and remove those variables
+  colSums(is.na(df))
+  df$Alley <- NULL
+  df$PoolQC <- NULL
+  df$Fence <- NULL
+  df$FireplaceQu <- NULL
+  dfOpenPorchSF <- NULL
+  df$WoodDeckSF <- NULL
+  df
+}
+
+transformData <- function(df) {
+  df$LotFrontage <- log(df$LotFrontage)
+  df$LotArea <- log(df$LotArea)
+  df$MasVnrArea <- log(df$MasVnrArea)
+  df$BsmtFinSF1 <- log(df$BsmtFinSF1)
+  df$BsmtUnfSf <- log(df$BsmtUnfSF)
+  df$TotalBsmtSF <- log(df$TotalBsmtSF)
+  df$X1stFlrSF <- log(df$X1stFlrSF)
+  
+  v <- sapply(X = df$X2ndFlrSF, function(x) {
+    value = 0
+    if (x != 0) {
+      value = log(x)
+    }
+    value
+  })
+  df$X2ndFlrSF <- v
+  
+  df$GrLivArea <- log(df$GrLivArea)
+  df$GarageArea <- log(df$GarageArea)
+  df$SalePrice <- log(df$SalePrice)
+  df
+}
+
+encodeData <- function(df) {
+  df$EncodeLotShape <- as.numeric(df$LotShape)
+  df$EncodeNeighborhood <- ifelse(df$Neighborhood == "MeadowV", 1, 0)
+  df$EncodeHouseStyle <- ifelse(df$HouseStyle == "1Story", 1, 0)
+  df$EncodeBsmtExposure <- ifelse(df$BsmtExposure == "Gd", 1, 0)
+  df$EncodeKitchenQual <- ifelse(df$KitchenQual == "TA", 1, 0)
+  df$EncodeBsmtQual <- ifelse(df$BsmtQual == "Gd" | df$BsmtQual == "TA", 1, 0)
+  df$BathToRoom <- (df$FullBath + df$HalfBath + df$BsmtHalfBath 
+                    + df$BsmtFullBath) / df$BedroomAbvGr
+  df$EncodeBldgType <- ifelse(df$BldgType == "Duplex", 1, 0)
+  df$EncodeHouseStyle <- ifelse(df$HouseStyle == "1Story" | df$HouseStyle == "SFoyer", 1, 0)
+  df$EncodedFoundation <- ifelse(df$Foundation == "CBlock", 0, 1)
+  df$EncodeSaleType <- ifelse(df$SaleType == 'ConLD' | df$SaleType == 'New', 1, 0)
+  df$EncodedSaleCondition <- ifelse(df$SaleCondition == 'Normal' | df$SaleType == 'Alloca', 1, 0)
+  df[mapply(is.infinite, df)] <- NA
+  df
+}
+
 df.train2 <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
 
-df.train2 <- df.train2[df.train2$LotShape != 'IR3', ] 
-# remove extreme outliers
-df.train2 <- df.train2[!(df.train2$Id %in% c(1299, 524)), ]
-
-# remove variables with near zero variance
-df.train2 <- df.train2[-nearZeroVar(df.train2)]
-
-# find high rate of missing values and remove those variables
-colSums(is.na(df.train2))
-df.train2$Alley <- NULL
-df.train2$PoolQC <- NULL
-df.train2$Fence <- NULL
-df.train2$FireplaceQu <- NULL
+## clean data
+df.train2 <- cleanData(df.train2)
 
 fit.full2 <- lm(df.train2$SalePrice ~ ., data = df.train2, na.action = na.exclude)
 summary(fit.full2)
@@ -37,30 +87,7 @@ summary(fit.full2)
 ######################################################################
 
 # transform values
-df.train2$LotFrontage <- log(df.train2$LotFrontage)
-df.train2$LotArea <- log(df.train2$LotArea)
-df.train2$MasVnrArea <- log(df.train2$MasVnrArea)
-df.train2$BsmtFinSF1 <- log(df.train2$BsmtFinSF1)
-df.train2$BsmtUnfSf <- log(df.train2$BsmtUnfSF)
-df.train2$TotalBsmtSF <- log(df.train2$TotalBsmtSF)
-df.train2$X1stFlrSF <- log(df.train2$X1stFlrSF)
-
-v <- sapply(X = df.train2$X2ndFlrSF, function(x) {
-  value = 0
-  if (x != 0) {
-    value = log(x)
-  }
-  value
-})
-df.train2$X2ndFlrSF <- v
-
-df.train2$GrLivArea <- log(df.train2$GrLivArea)
-df.train2$GarageArea <- log(df.train2$GarageArea)
-df.train2$SalePrice <- log(df.train2$SalePrice)
-
-df.train2$OpenPorchSF <- NULL
-df.train2$WoodDeckSF <- NULL
-
+df.train2 <- transformData(df.train2)
 
 # get train and test
 set.seed(101) 
@@ -112,38 +139,8 @@ summary(fit.both)
 # manual fit
 df.train2.manual <- df.train2
 
-df.train2.manual$EncodeLotShape <- as.numeric(df.train2.manual$LotShape)
-df.train2.manual$EncodeNeighborhood <- ifelse(df.train2.manual$Neighborhood == "MeadowV", 1, 0)
-df.train2.manual$EncodeHouseStyle <- ifelse(df.train2.manual$HouseStyle == "1Story", 1, 0)
-df.train2.manual$EncodeBsmtExposure <- ifelse(df.train2.manual$BsmtExposure == "Gd", 1, 0)
-df.train2.manual$EncodeKitchenQual <- ifelse(df.train2.manual$KitchenQual == "TA", 1, 0)
-df.train2.manual$EncodeBsmtQual <- ifelse(df.train2.manual$BsmtQual == "Gd" | df.train2.manual$BsmtQual == "TA", 1, 0)
-df.train2.manual$BathToRoom <- (df.train2.manual$FullBath + df.train2.manual$HalfBath + df.train2.manual$BsmtHalfBath 
-                                + df.train2.manual$BsmtFullBath) / df.train2.manual$BedroomAbvGr
-df.train2.manual$EncodeBldgType <- ifelse(df.train2.manual$BldgType == "Duplex", 1, 0)
-df.train2.manual$EncodeHouseStyle <- ifelse(df.train2.manual$HouseStyle == "1Story" | df.train2.manual$HouseStyle == "SFoyer", 1, 0)
-df.train2.manual$EncodedFoundation <- ifelse(df.train2.manual$Foundation == "CBlock", 0, 1)
-df.train2.manual$EncodeSaleType <- ifelse(df.train2.manual$SaleType == 'ConLD' | df.train2.manual$SaleType == 'New', 1, 0)
-df.train2.manual$EncodedSaleCondition <- ifelse(df.train2.manual$SaleCondition == 'Normal' | df.train2.manual$SaleType == 'Alloca', 1, 0)
-df.train2.manual[mapply(is.infinite, df.train2.manual)] <- NA
+df.train2.manual <- encodeData(df.train2.manual)
 
-modifyData <- function(df) {
-  df$EncodeLotShape <- as.numeric(df$LotShape)
-  df$EncodeNeighborhood <- ifelse(df$Neighborhood == "MeadowV", 1, 0)
-  df$EncodeHouseStyle <- ifelse(df$HouseStyle == "1Story", 1, 0)
-  df$EncodeBsmtExposure <- ifelse(df$BsmtExposure == "Gd", 1, 0)
-  df$EncodeKitchenQual <- ifelse(df$KitchenQual == "TA", 1, 0)
-  df$EncodeBsmtQual <- ifelse(df$BsmtQual == "Gd" | df$BsmtQual == "TA", 1, 0)
-  df$BathToRoom <- (df$FullBath + df$HalfBath + df$BsmtHalfBath 
-                                  + df$BsmtFullBath) / df$BedroomAbvGr
-  df$EncodeBldgType <- ifelse(df$BldgType == "Duplex", 1, 0)
-  df$EncodeHouseStyle <- ifelse(df$HouseStyle == "1Story" | df$HouseStyle == "SFoyer", 1, 0)
-  df$EncodedFoundation <- ifelse(df$Foundation == "CBlock", 0, 1)
-  df$EncodeSaleType <- ifelse(df$SaleType == 'ConLD' | df$SaleType == 'New', 1, 0)
-  df$EncodedSaleCondition <- ifelse(df$SaleCondition == 'Normal' | df$SaleType == 'Alloca', 1, 0)
-  df[mapply(is.infinite, df)] <- NA
-  df
-}
 fit.manual <- lm(formula = SalePrice ~ LotArea + OverallQual  
                   + EncodeBsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF
                  + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning + EncodeBldgType 
@@ -158,13 +155,14 @@ hist(fit.manual$residuals)
 
 
 # generate predictions
+
 df.train2.manual$PredPrice <- predict(fit.manual)
-test <- modifyData(test)
-test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(SalePrice,LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,EncodeBldgType,OverallCond,MasVnrType,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
 
 train.corr <- cor(df.train2.manual$PredPrice, df.train2.manual$SalePrice)
 train.RMSE <- sqrt(mean((df.train2.manual$PredPrice - df.train2.manual$SalePrice) ^2, na.rm=TRUE))
 
+test <- encodeData(test)
+test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(SalePrice,LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,EncodeBldgType,OverallCond,MasVnrType,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
 test.RMSE <- sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
 
 
