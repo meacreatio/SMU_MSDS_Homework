@@ -33,7 +33,7 @@ df.train2$FireplaceQu <- NULL
 fit.full2 <- lm(df.train2$SalePrice ~ ., data = df.train2, na.action = na.exclude)
 summary(fit.full2)
 
-# look at the scatter plots to asset for normality ####################
+# look at the scatter plots to assess for normality ####################
 #df.train2.numeric <- select_if(df.train2, is.numeric)
 
 #df.plots <- melt(df.train2.numeric, "SalePrice")
@@ -72,8 +72,6 @@ df.train2$SalePrice <- log(df.train2$SalePrice)
 
 # remove inf
 df.train2[mapply(is.infinite, df.train2)] <- NA
-
-# TODO create training set
 
 # choose model 
 df.train2.steps <-na.omit(df.train2)
