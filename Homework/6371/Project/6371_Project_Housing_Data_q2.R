@@ -83,3 +83,20 @@ fit.both <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + Neighborhood 
                + BsmtQual + LotArea + OverallCond + GarageType + KitchenQual + YearBuilt + TotalBsmtSF + Fireplaces 
                + MoSold + BsmtUnfSF, data = df.train2.steps, na.action = na.exclude)
 summary(fit.both)
+
+# manual fit
+df.train2.manual <- na.omit(df.train2)
+df.train2.manual <- df.train2.manual[df.train2.manual$LotShape != 'IR3', ]
+df.train2.manual$EncodeLotShape <- as.numeric(df.train2.manual$LotShape)
+df.train2.manual$EncodeNeighborhood <- ifelse(df.train2.manual$Neighborhood == "NoRidge" | df.train2.manual$Neighborhood == "NridgHt" 
+                                        | df.train2.manual$Neighborhood == "StoneBr", 1, 0)
+df.train2.manual$EncodeHouseStyle <- ifelse(df.train2.manual$HouseStyle == "1Story", 1, 0)
+df.train2.manual$EncodeBsmtExposure <- ifelse(df.train2.manual$BsmtExposure == "Gd", 1, 0)
+df.train2.manual$EncodeKitchenQual <- ifelse(df.train2.manual$KitchenQual == "TA", 1, 0)
+
+
+fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual + FullBath + df.train2.manual$EncodeKitchenQual 
+                 + GarageCars + df.train2.manual$EncodeNeighborhood + df.train2.manual$EncodeHouseStyle
+                 + df.train2.manual$BsmtQual + df.train2.manual$EncodeBsmtExposure, 
+                 data = df.train2.manual, na.action = na.exclude)
+summary(fit.manual)
