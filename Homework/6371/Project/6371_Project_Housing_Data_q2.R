@@ -7,7 +7,7 @@ library(caret)
 df.train2 <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
 df.train2 <- df.train2[df.train2$LotShape != 'IR3', ] 
 # remove extreme outliers
-df.train2 <- df.train2[!(df.train2$Id %in% c(1299,524)), ]
+df.train2 <- df.train2[!(df.train2$Id %in% c(1299, 524)), ]
 
 # remove variables with near zero variance
 library(caret)
