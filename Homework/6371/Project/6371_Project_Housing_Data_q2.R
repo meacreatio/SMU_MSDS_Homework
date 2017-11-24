@@ -120,8 +120,7 @@ df.train2.manual$EncodeBsmtQual <- ifelse(df.train2.manual$BsmtQual == "Gd" | df
 df.train2.manual$BathToRoom <- (df.train2.manual$FullBath + df.train2.manual$HalfBath + df.train2.manual$BsmtHalfBath 
                                 + df.train2.manual$BsmtFullBath) / df.train2.manual$BedroomAbvGr
 df.train2.manual$EncodeBldgType <- ifelse(df.train2.manual$BldgType == "Duplex", 1, 0)
-df.train2.manual$EncodeHouseStyle <- ifelse(df.train2.manual$HouseStyle == "1.5Unf" | df.train2.manual$HouseStyle == "1Story" 
-                                            | df.train2.manual$HouseStyle == "SFoyer" | df.train2.manual$HouseStyle == "SLvl", 1, 0)
+df.train2.manual$EncodeHouseStyle <- ifelse(df.train2.manual$HouseStyle == "1Story" | df.train2.manual$HouseStyle == "SFoyer", 1, 0)
 
 df.train2.manual[mapply(is.infinite, df.train2.manual)] <- NA
 
@@ -130,7 +129,7 @@ df.train2.manual[mapply(is.infinite, df.train2.manual)] <- NA
 
 fit.manual <- lm(formula = df.train2.manual$SalePrice ~ LotArea + OverallQual  
                   + df.train2.manual$EncodeBsmtQual + df.train2.manual$EncodeBsmtExposure + GrLivArea + TotalBsmtSF
-                 + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning + df.train2.manual$EncodeBldgType + EncodeHouseStyle 
+                 + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning + df.train2.manual$EncodeBldgType 
                  + OverallCond + MasVnrType, 
                  data = df.train2.manual, na.action = na.exclude)
 summary(fit.manual)
