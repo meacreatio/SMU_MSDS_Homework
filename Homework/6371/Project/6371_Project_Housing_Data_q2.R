@@ -138,6 +138,13 @@ fit.both <- lm(formula = df.train2.steps$SalePrice ~ OverallQual + GrLivArea + N
                data = df.train2.steps, na.action = na.exclude)
 summary(fit.both)
 
+# k fold cross validation
+df.train2.kfold <- df.train2
+df.train2.kfold <- na.omit(df.train2.kfold)
+train_control <- trainControl(method="cv", number=10, savePredictions = T)
+# fit.kfold <- train(SalePrice ~ ., data = df.train2.kfold, trControl=train_control, metric="Rsquared", na.action = na.omit)
+# RMSE = 0.1141308, Rsquared = 0.9230554
+
 # manual fit
 df.train2.manual <- df.train2
 
@@ -159,7 +166,7 @@ plot(cooks.distance(fit.manual, data = df.train2.manual))
 # alpha precitions for pre-validation
 test <- encodeData(test)
 test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
-sqrt(mean((exp(test$PredPrice) - exp(test$SalePrice)) ^2, na.rm=TRUE))
+sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
 
 # clean, transform, encode test data
 t <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
@@ -179,6 +186,7 @@ df.kaggle <- df.test[kaggleColumns]
 df.kaggle[mapply(is.na, df.kaggle)] <- exp(mean(df.train2.manual$SalePrice, na.rm=TRUE))
 write.csv(x = df.kaggle, file = "~/Desktop/meacreatio_housing.csv", row.names = F)
 
+# RMSE = 0.09769911
 # 0.16218
 
 
