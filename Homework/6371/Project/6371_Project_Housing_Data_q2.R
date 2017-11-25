@@ -5,11 +5,13 @@ library(car)
 library(caret)
 library(caTools)
 
-cleanData <- function(df) {
-  # df <- df[df$LotShape != 'IR3', ] 
-  # remove extreme outliers
-  # df <- df[!(df$Id %in% c(1299, 524)), ]
-  
+cleanData <- function(df, isTrain = T) {
+  if(isTrain == T) {
+    df <- df[df$LotShape != 'IR3', ] 
+    # remove extreme outliers
+    df <- df[!(df$Id %in% c(1299, 524)), ]
+  }
+
   # remove variables with near zero variance
   df <- df[-nearZeroVar(df)]
   
@@ -165,7 +167,7 @@ test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(LotArea,
 test.RMSE <- sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
 
 # clean, transform, encode test data
-df.test <- cleanData(df.test)
+df.test <- cleanData(df.test, isTrain = F)
 df.test <- transformData(df.test, isTest = T)
 df.test <- encodeData(df.test)
 
