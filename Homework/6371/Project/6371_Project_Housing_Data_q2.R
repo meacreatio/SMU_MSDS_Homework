@@ -164,7 +164,7 @@ hist(fit.manual$residuals)
 # alpha precitions for pre-validation
 test <- encodeData(test)
 test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,EncodeBldgType,OverallCond,MasVnrType,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
-test.RMSE <- sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
+test.RMSE <- sqrt(mean((exp(test$PredPrice) - exp(test$SalePrice)) ^2, na.rm=TRUE))
 
 # clean, transform, encode test data
 df.test <- cleanData(df.test, isTrain = F)
