@@ -21,8 +21,21 @@ cleanData <- function(df, isTrain = T) {
   df$PoolQC <- NULL
   df$Fence <- NULL
   df$FireplaceQu <- NULL
-  dfOpenPorchSF <- NULL
+  df$OpenPorchSF <- NULL
   df$WoodDeckSF <- NULL
+  df$Street <- NULL
+  df$LandContour <- NULL
+  df$LandSlope <- NULL
+  df$Condition2 <- NULL
+  df$RoofMatl <- NULL
+  df$BsmtCond <- NULL
+  df$BsmtFinType2 <- NULL
+  df$Heating <- NULL
+  df$Functional <- NULL
+  df$GarageQual <- NULL
+  df$GarageCond <- NULL
+  df$MiscFeature  <- NULL
+  df$Utilities <- NULL
   df
 }
 
@@ -195,8 +208,6 @@ write.csv(x = df.kaggle, file = "~/Desktop/meacreatio_housing.csv", row.names = 
 
 # RMSE = 0.09769911
 # 0.16218
-
-
 
 
 

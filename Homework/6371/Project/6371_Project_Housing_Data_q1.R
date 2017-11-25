@@ -1,6 +1,47 @@
 library(car)
 
+cleanData1 <- function(df, isTrain = T) { # TODOMP move duplicate logic to shared file
+  if(isTrain == T) {
+    df <- df[df$LotShape != 'IR3', ] 
+    # remove extreme outliers
+    df <- df[!(df$Id %in% c(1299, 524, 31, 463, 633, 89, 589, 496, 682, 813, 969)), ]
+  }
+  
+  # remove variables with near zero variance
+  df <- df[-nearZeroVar(df)]
+  
+  # find high rate of missing values and remove those variables
+  colSums(is.na(df))
+  df$Alley <- NULL
+  df$PoolQC <- NULL
+  df$Fence <- NULL
+  df$FireplaceQu <- NULL
+  df$OpenPorchSF <- NULL
+  df$WoodDeckSF <- NULL
+  df$Street <- NULL
+  df$LandContour <- NULL
+  df$LandSlope <- NULL
+  df$Condition2 <- NULL
+  df$RoofMatl <- NULL
+  df$BsmtCond <- NULL
+  df$BsmtFinType2 <- NULL
+  df$Heating <- NULL
+  df$Functional <- NULL
+  df$GarageQual <- NULL
+  df$GarageCond <- NULL
+  df$MiscFeature  <- NULL
+  df$Utilities <- NULL
+  df
+}
+
 df.train <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
+df.train <- cleanData1(df.train)
+ameliatedData2 <- Amelia::amelia(df.train,m=1, p2s=1, ords = c("MSZoning", "LotShape", "LotConfig", "Neighborhood", "Condition1", 
+                                                                "BldgType", "HouseStyle", "RoofStyle", "Exterior1st", "Exterior2nd", 
+                                                                "MasVnrType", "ExterQual", "ExterCond", "Foundation", "BsmtQual", 
+                                                                "BsmtExposure", "BsmtFinType1", "HeatingQC", "CentralAir", "Electrical", 
+                                                                "KitchenQual", "GarageType", "GarageFinish", "PavedDrive", "SaleType", 
+                                                                "SaleCondition"))
 
 # handle only NAmes, Edwards, BrkSide
 df.filtered <- df.train[df.train$Neighborhood == "NAmes" | df.train$Neighborhood == "Edwards" | df.train$Neighborhood == "BrkSide", ]
@@ -12,6 +53,21 @@ fit.full <- lm(df.filtered$SalePrice ~ df.filtered$GrLivArea + df.filtered$Neigh
 summary(fit.full)
 
 # use SAS for kfold?
+df.train1.kfold <- df.filtered
+set.seed(17)
+model1 <- train(
+  SalePrice ~ GrLivArea + Neighborhood, df.train1.kfold,
+  method = "lm",
+  trControl = trainControl(
+    method = "cv", number = 10,
+    verboseIter = TRUE
+  ), na.action = na.omit
+)
+model1
+summary(model1$finalModel)
+# Residual standard error: 27280 on 376 degrees of freedom
+# Multiple R-squared:  0.494,	Adjusted R-squared:  0.4899 
+# F-statistic: 122.4 on 3 and 376 DF,  p-value: < 2.2e-16
 
 # check plots -> need log transform
 scatterplotMatrix(~df.filtered$SalePrice + df.filtered$GrLivArea, data=df.filtered)
