@@ -9,7 +9,7 @@ cleanData <- function(df, isTrain = T) {
   if(isTrain == T) {
     df <- df[df$LotShape != 'IR3', ] 
     # remove extreme outliers
-    df <- df[!(df$Id %in% c(1299, 524)), ]
+    df <- df[!(df$Id %in% c(1299, 524, 31, 463, 633, 89, 589, 496)), ]
   }
 
   # remove variables with near zero variance
