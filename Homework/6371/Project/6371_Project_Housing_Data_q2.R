@@ -69,7 +69,7 @@ encodeData <- function(df) {
   df$EncodedFoundation <- ifelse(df$Foundation == "PConc" | df$Foundation == "Stone", 1, 0)
   df$EncodeSaleType <- ifelse(df$SaleType == 'ConLD' | df$SaleType == 'New', 1, 0)
   df$EncodedSaleCondition <- ifelse(df$SaleCondition == 'Normal' | df$SaleType == 'Alloca', 1, 0)
-  
+  df$cent1 <- (df$SalePrice - mean(df$SalePrice, na.rm=TRUE)) * (df$EncodedSaleCondition - mean(df$EncodedSaleCondition))
   df[mapply(is.infinite, df)] <- NA
   df
 }
@@ -145,9 +145,9 @@ df.train2.manual <- encodeData(df.train2.manual)
 
 fit.manual <- lm(formula = SalePrice ~ LotArea + OverallQual  
                   + EncodeBsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF
-                 + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning + EncodeBldgType 
+                 + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning 
                  + OverallCond + MasVnrType + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
-                 + GarageCars + EncodeSaleType + EncodedSaleCondition, 
+                 + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1, 
                  data = df.train2.manual, na.action = na.exclude)
 
 summary(fit.manual)
@@ -158,16 +158,19 @@ hist(fit.manual$residuals)
 
 # alpha precitions for pre-validation
 test <- encodeData(test)
-test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,EncodeBldgType,OverallCond,MasVnrType,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,MasVnrType,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
 test.RMSE <- sqrt(mean((exp(test$PredPrice) - exp(test$SalePrice)) ^2, na.rm=TRUE))
 
 # clean, transform, encode test data
+t <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
+t <- t[-c(1460), ]
+df.test$SalePrice <- t$SalePrice
 df.test <- cleanData(df.test, isTrain = F)
 df.test <- transformData(df.test, isTest = T)
 df.test <- encodeData(df.test)
 
 # generate predictions
-df.test$PredPrice <- predict(fit.manual, newdata = subset(df.test, select = c(LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,EncodeBldgType,OverallCond,MasVnrType,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+df.test$PredPrice <- predict(fit.manual, newdata = subset(df.test, select = c(cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,MasVnrType,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
 df.test$SalePrice <- exp(df.test$PredPrice)
 
 # create kaggle data frame
@@ -176,7 +179,7 @@ df.kaggle <- df.test[kaggleColumns]
 df.kaggle[mapply(is.na, df.kaggle)] <- exp(mean(df.train2.manual$SalePrice, na.rm=TRUE))
 write.csv(x = df.kaggle, file = "~/Desktop/meacreatio_housing.csv", row.names = F)
 
-#0.16763,
+#0.16715
 
 
 
