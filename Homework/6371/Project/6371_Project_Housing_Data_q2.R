@@ -154,7 +154,7 @@ summary(fit.manual)
 vif(fit.manual)
 plot(fit.manual)
 hist(fit.manual$residuals)
-
+plot(cooks.distance(fit.manual, data = df.train2.manual))
 
 # alpha precitions for pre-validation
 test <- encodeData(test)
