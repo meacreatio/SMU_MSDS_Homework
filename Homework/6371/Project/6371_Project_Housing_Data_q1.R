@@ -1,3 +1,5 @@
+library(car)
+
 df.train <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
 
 # handle only NAmes, Edwards, BrkSide
@@ -56,3 +58,4 @@ anova(fit.full, fit.reduced)
 # view the data
 plot(fit.reduced)
 olsrr::ols_rsd_hist(fit.reduced)
+plot(cooks.distance(fit.reduced, data=df.filtered))
