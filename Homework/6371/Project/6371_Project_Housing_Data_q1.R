@@ -11,6 +11,8 @@ df.filtered <- df.filtered[!(df.filtered$Id %in% c(1299,524)), ]
 fit.full <- lm(df.filtered$SalePrice ~ df.filtered$GrLivArea + df.filtered$Neighborhood, data = df.filtered)
 summary(fit.full)
 
+# use SAS for kfold?
+
 # check plots -> need log transform
 scatterplotMatrix(~df.filtered$SalePrice + df.filtered$GrLivArea, data=df.filtered)
 
