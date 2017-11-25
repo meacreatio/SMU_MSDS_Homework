@@ -66,9 +66,10 @@ encodeData <- function(df) {
                     + df$BsmtFullBath) / df$BedroomAbvGr
   df$EncodeBldgType <- ifelse(df$BldgType == "Duplex", 1, 0)
   df$EncodeHouseStyle <- ifelse(df$HouseStyle == "1Story" | df$HouseStyle == "SFoyer", 1, 0)
-  df$EncodedFoundation <- ifelse(df$Foundation == "CBlock", 0, 1)
+  df$EncodedFoundation <- ifelse(df$Foundation == "PConc" | df$Foundation == "Stone", 1, 0)
   df$EncodeSaleType <- ifelse(df$SaleType == 'ConLD' | df$SaleType == 'New', 1, 0)
   df$EncodedSaleCondition <- ifelse(df$SaleCondition == 'Normal' | df$SaleType == 'Alloca', 1, 0)
+  
   df[mapply(is.infinite, df)] <- NA
   df
 }
@@ -117,13 +118,7 @@ fit.steps <- lm(df.train2.steps$SalePrice ~ ., data = df.train2.steps, na.action
 
 # backward
 # olsrr::ols_stepaic_backward(fit.steps, details = T)
-fit.backward <- lm(df.train2.steps$SalePrice ~ MSSubClass + MSZoning + LotArea + LotConfig
-                   + Neighborhood + Condition1 + BldgType + HouseStyle + OverallQual 
-                   + OverallCond + YearBuilt + YearRemodAdd + Exterior1st + MasVnrType 
-                   + ExterCond + Foundation + BsmtQual + BsmtExposure + BsmtUnfSF + TotalBsmtSF 
-                   + HeatingQC + CentralAir + X2ndFlrSF + GrLivArea + BsmtFullBath + HalfBath 
-                   + KitchenQual + Fireplaces + GarageCars + GarageArea + PavedDrive + YrSold 
-                   + SaleType + SaleCondition, data = df.train2.steps, na.action = na.exclude)
+fit.backward <- lm(df.train2.steps$SalePrice ~ MSSubClass + MSZoning + LotArea + LotConfig + Neighborhood + Condition1 + BldgType + HouseStyle + OverallQual + OverallCond + YearBuilt + YearRemodAdd + Exterior1st + ExterCond + Foundation + BsmtQual + BsmtExposure + BsmtFinType1 + BsmtUnfSF + TotalBsmtSF + HeatingQC + CentralAir + X2ndFlrSF + GrLivArea + BsmtFullBath + FullBath + HalfBath + KitchenQual + TotRmsAbvGrd + Fireplaces + GarageCars + GarageArea + PavedDrive + OpenPorchSF + YrSold + SaleType + SaleCondition , data = df.train2.steps, na.action = na.exclude)
 summary(fit.backward)
 
 # olsrr::ols_stepaic_forward(fit.steps, details = T)
