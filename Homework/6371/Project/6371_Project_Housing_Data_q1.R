@@ -1,4 +1,5 @@
 library(car)
+library(Amelia)
 
 cleanData1 <- function(df, isTrain = T) { # TODOMP move duplicate logic to shared file
   if(isTrain == T) {
@@ -36,12 +37,15 @@ cleanData1 <- function(df, isTrain = T) { # TODOMP move duplicate logic to share
 
 df.train <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
 df.train <- cleanData1(df.train)
-ameliatedData2 <- Amelia::amelia(df.train,m=1, p2s=1, ords = c("MSZoning", "LotShape", "LotConfig", "Neighborhood", "Condition1", 
+ameliatedData6 <- amelia(df.train,m=1, p2s=1, ords = c("MSZoning", "LotShape", "LotConfig", "Neighborhood", "Condition1", 
                                                                 "BldgType", "HouseStyle", "RoofStyle", "Exterior1st", "Exterior2nd", 
                                                                 "MasVnrType", "ExterQual", "ExterCond", "Foundation", "BsmtQual", 
                                                                 "BsmtExposure", "BsmtFinType1", "HeatingQC", "CentralAir", "Electrical", 
                                                                 "KitchenQual", "GarageType", "GarageFinish", "PavedDrive", "SaleType", 
                                                                 "SaleCondition"))
+
+write.amelia(obj=ameliatedData6, file.stem="q1_data")
+df.train <- read.csv("q1_data1.csv")
 
 # handle only NAmes, Edwards, BrkSide
 df.filtered <- df.train[df.train$Neighborhood == "NAmes" | df.train$Neighborhood == "Edwards" | df.train$Neighborhood == "BrkSide", ]
@@ -51,23 +55,6 @@ df.filtered <- df.filtered[!(df.filtered$Id %in% c(1299,524)), ]
 
 fit.full <- lm(df.filtered$SalePrice ~ df.filtered$GrLivArea + df.filtered$Neighborhood, data = df.filtered)
 summary(fit.full)
-
-# use SAS for kfold?
-df.train1.kfold <- df.filtered
-set.seed(17)
-model1 <- train(
-  SalePrice ~ GrLivArea + Neighborhood, df.train1.kfold,
-  method = "lm",
-  trControl = trainControl(
-    method = "cv", number = 10,
-    verboseIter = TRUE
-  ), na.action = na.omit
-)
-model1
-summary(model1$finalModel)
-# Residual standard error: 27280 on 376 degrees of freedom
-# Multiple R-squared:  0.494,	Adjusted R-squared:  0.4899 
-# F-statistic: 122.4 on 3 and 376 DF,  p-value: < 2.2e-16
 
 # check plots -> need log transform
 scatterplotMatrix(~df.filtered$SalePrice + df.filtered$GrLivArea, data=df.filtered)
@@ -117,3 +104,21 @@ anova(fit.full, fit.reduced)
 plot(fit.reduced)
 olsrr::ols_rsd_hist(fit.reduced)
 plot(cooks.distance(fit.reduced, data=df.filtered))
+
+# k fold
+df.train1.kfold <- df.filtered
+set.seed(17)
+model1 <- train(
+  logSalePrice ~ LogGrLiveArea + Neighborhood, data = df.train1.kfold,
+  method = "lm",
+  trControl = trainControl(
+    method = "cv", number = 10,
+    verboseIter = TRUE
+  ), na.action = na.omit
+)
+model1
+summary(model1$finalModel)
+# Residual standard error: 0.1936 on 376 degrees of freedom
+# Multiple R-squared:  0.5034,	Adjusted R-squared:  0.4995 
+# F-statistic: 127.1 on 3 and 376 DF,  p-value: < 2.2e-16
+
