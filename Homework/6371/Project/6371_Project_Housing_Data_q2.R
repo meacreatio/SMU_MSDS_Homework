@@ -179,7 +179,7 @@ fit.manual <- lm(formula = SalePrice ~ LotArea + OverallQual
                  + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning 
                  + OverallCond + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
                  + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1 + EncodeNeighborhood 
-                 + EncodeCondition1 + EncodeCondition1L + EncodeBldgType, 
+                 + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + MasVnrType, 
                  data = df.train2.manual, na.action = na.exclude)
 
 summary(fit.manual)
@@ -190,7 +190,7 @@ plot(cooks.distance(fit.manual, data = df.train2.manual))
 
 # alpha precitions for pre-validation
 test <- encodeData(test)
-test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(EncodeBldgType, EncodeCondition1L, EncodeCondition1,EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(MasVnrType, EncodeBldgType, EncodeCondition1L, EncodeCondition1,EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
 sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
 
 # clean, transform, encode test data
