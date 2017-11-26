@@ -179,7 +179,7 @@ fit.manual <- lm(formula = SalePrice ~ LotArea + OverallQual
                  + BsmtUnfSF + BathToRoom + YearBuilt + MSZoning 
                  + OverallCond + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
                  + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1 + EncodeNeighborhood 
-                 + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + MasVnrType + BsmtFinSF1, 
+                 + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + MasVnrType + BsmtFinSF1 + BsmtFullBath, 
                  data = df.train2.manual, na.action = na.exclude)
 
 summary(fit.manual)
@@ -190,7 +190,7 @@ plot(cooks.distance(fit.manual, data = df.train2.manual))
 
 # alpha precitions for pre-validation
 test <- encodeData(test)
-test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(BsmtFinSF1, MasVnrType, EncodeBldgType, EncodeCondition1L, EncodeCondition1,EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(BsmtFullBath, BsmtFinSF1, MasVnrType, EncodeBldgType, EncodeCondition1L, EncodeCondition1,EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
 sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
 
 # clean, transform, encode test data
@@ -202,7 +202,7 @@ df.test <- transformData(df.test, isTest = F)
 df.test <- encodeData(df.test)
 
 # generate predictions
-df.test$PredPrice <- predict(fit.manual, newdata = subset(df.test, select = c(BsmtFinSF1, MasVnrType,EncodeBldgType, EncodeCondition1L, EncodeCondition1, EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+df.test$PredPrice <- predict(fit.manual, newdata = subset(df.test, select = c(BsmtFullBath, BsmtFinSF1, MasVnrType,EncodeBldgType, EncodeCondition1L, EncodeCondition1, EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
 df.test$SalePrice <- exp(df.test$PredPrice)
 
 # create kaggle data frame
