@@ -83,7 +83,7 @@ encodeData <- function(df) {
   df$EncodeSaleType <- ifelse(df$SaleType == 'ConLD' | df$SaleType == 'New', 1, 0)
   df$EncodedSaleCondition <- ifelse(df$SaleCondition == 'Normal' | df$SaleType == 'Alloca', 1, 0)
   df$cent1 <- (df$SalePrice - mean(df$SalePrice, na.rm=TRUE)) * (df$EncodedSaleCondition - mean(df$EncodedSaleCondition))
-  df$EncodeNeighborhood <- ifelse(df$Neighborhood == 'StoneBr', 1, 0)
+  df$EncodeNeighborhood <- ifelse(df$Neighborhood == 'StoneBr' | df$Neighborhood == 'Crawfor', 1, 0)
   df[mapply(is.infinite, df)] <- NA
   df
 }
@@ -207,8 +207,8 @@ df.kaggle <- df.test[kaggleColumns]
 df.kaggle[mapply(is.na, df.kaggle)] <- exp(mean(df.train2.manual$SalePrice, na.rm=TRUE))
 write.csv(x = df.kaggle, file = "~/Desktop/meacreatio_housing.csv", row.names = F)
 
-# RMSE = 0.09733709
-# 0.16200
+# RMSE = 0.0945232
+# 0.16045
 
 # for testing
 df.trainTest <- read.csv("q1_data1.csv")
