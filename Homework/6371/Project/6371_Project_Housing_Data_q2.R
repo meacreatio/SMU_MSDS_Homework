@@ -91,14 +91,15 @@ rss(kfold.both)
 
 # manual fit
 df.train2.manual <- df.train2
-
-fit.manual <- lm(formula = SalePrice ~ LotArea + OverallQual  
-                  + EncodeBsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF
-                 + YearBuilt + MSZoning 
-                 + OverallCond + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
-                 + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1 + EncodeNeighborhood 
-                 + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + BsmtFullBath, 
-                 data = df.train2.manual, na.action = na.exclude)
+formula.manual <- as.formula(SalePrice ~ LotArea + OverallQual  
+                             + EncodeBsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF
+                             + YearBuilt + MSZoning 
+                             + OverallCond + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
+                             + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1 + EncodeNeighborhood 
+                             + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + BsmtFullBath, env = new.env())
+fit.manual <- lm(formula = formula.manual, data = df.train2.manual, na.action = na.exclude)
+kfold.manual <- kfold(lmFormula = formula.manual, df = df.train2.manual)
+rss(kfold.manual)
 
 summary(fit.manual)
 vif(fit.manual)
