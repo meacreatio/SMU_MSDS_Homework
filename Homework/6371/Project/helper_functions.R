@@ -87,3 +87,15 @@ encodeData <- function(df) {
   df[mapply(is.infinite, df)] <- NA
   df
 }
+
+kfold <- function(lmFormula, df) {
+  model <- train(
+    lmFormula, data = df,
+    method = "lm",
+    trControl = trainControl(
+      method = "cv", number = 10,
+      verboseIter = TRUE
+    ), na.action = na.omit
+  )
+  model$finalModel
+}
