@@ -74,17 +74,6 @@ plot(cooks.distance(fit.reduced, data=df.filtered))
 # k fold
 df.train1.kfold <- df.filtered
 set.seed(17)
-model1 <- train(
-  logSalePrice ~ LogGrLiveArea + Neighborhood, data = df.train1.kfold,
-  method = "lm",
-  trControl = trainControl(
-    method = "cv", number = 10,
-    verboseIter = TRUE
-  ), na.action = na.omit
-)
-model1
-summary(model1$finalModel)
-# Residual standard error: 0.1936 on 376 degrees of freedom
-# Multiple R-squared:  0.5034,	Adjusted R-squared:  0.4995 
-# F-statistic: 127.1 on 3 and 376 DF,  p-value: < 2.2e-16
-rss(model1$finalModel)
+formula.q1 <- as.formula(logSalePrice ~ LogGrLiveArea + Neighborhood, env = new.env())
+kfold.q1 <- kfold(lmFormula = formula.q1, df = df.train1.kfold)
+rss(kfold.q1)
