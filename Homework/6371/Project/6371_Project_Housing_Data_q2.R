@@ -52,8 +52,8 @@ fit.steps <- lm(SalePrice ~ ., data = df.train2.steps, na.action = na.exclude)
 # olsrr::ols_stepaic_forward(fit.steps, details = T)
 formula.forward <- as.formula(SalePrice ~ OverallQual + GrLivArea + Neighborhood + TotalBsmtSF 
                            + OverallCond + YearBuilt + LotArea + BsmtUnfSF + KitchenQual + SaleCondition 
-                           + GarageCars + Exterior1st + Condition1 + BsmtExposure + Fireplaces + MSZoning 
-                           + BsmtQual + EncodeBldgType + Foundation + cent1 + BsmtFullBath + CentralAir 
+                           + GarageCars + Condition1 + BsmtExposure + Fireplaces + MSZoning 
+                           + BsmtQual + EncodeBldgType + cent1 + BsmtFullBath + CentralAir 
                            + BsmtFinType1 + MSSubClass + LotConfig + ExterCond + HeatingQC + FullBath 
                            + HalfBath + PavedDrive + HouseStyle + X2ndFlrSF, env = new.env())
 fit.forward <- lm(formula = formula.forward, data = df.train2.steps, na.action = na.exclude)
@@ -119,7 +119,25 @@ df.test <- cleanData(df.test, isTrain = F)
 df.test <- transformData(df.test, isTest = F)
 df.test <- encodeData(df.test)
 
-# generate predictions
+# generate predictions for manual
+df.test$PredPrice <- predict(fit.manual, newdata = subset(df.test, select = c(BsmtFullBath,EncodeBldgType, EncodeCondition1L, EncodeCondition1, EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+df.test$SalePrice <- exp(df.test$PredPrice)
+
+# generate predictions for forward
+df.test$PredPrice <- predict.lm(object = fit.forward, newdata = df.test)
+df.test$PredPrice <- predict(fit.forward, newdata = subset(df.test, select = c(OverallQual,GrLivArea,Neighborhood,TotalBsmtSF,OverallCond,YearBuilt,LotArea,BsmtUnfSF,KitchenQual,SaleCondition,GarageCars,Condition1,BsmtExposure,Fireplaces,MSZoning,BsmtQual,EncodeBldgType,cent1,BsmtFullBath,CentralAir,BsmtFinType1,MSSubClass,LotConfig,ExterCond,HeatingQC,FullBath,HalfBath,PavedDrive,HouseStyle,X2ndFlrSF)))
+df.test$SalePrice <- exp(df.test$PredPrice)
+
+# generate predictions for backward
+df.test$PredPrice <- predict(fit.backward, newdata = subset(df.test, select = c(MSSubClass,MSZoning,LotArea,LotConfig,Neighborhood 
+                                                                              ,HouseStyle,OverallQual,OverallCond,YearBuilt,YearRemodAdd,Exterior1st
+                                                                              ,MasVnrType,ExterCond,Foundation,BsmtQual,BsmtExposure,BsmtFinType1
+                                                                              ,BsmtUnfSF,TotalBsmtSF,CentralAir,X2ndFlrSF,GrLivArea,BsmtFullBath
+                                                                              ,FullBath,HalfBath,KitchenQual,Fireplaces,GarageCars,PavedDrive
+                                                                              ,SaleCondition,EncodeBldgType,cent1,EncodeCondition1,EncodeCondition1L)))
+df.test$SalePrice <- exp(df.test$PredPrice)
+
+# generate predictions for manual
 df.test$PredPrice <- predict(fit.manual, newdata = subset(df.test, select = c(BsmtFullBath,EncodeBldgType, EncodeCondition1L, EncodeCondition1, EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
 df.test$SalePrice <- exp(df.test$PredPrice)
 
