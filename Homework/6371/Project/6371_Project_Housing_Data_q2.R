@@ -202,7 +202,7 @@ df.test <- transformData(df.test, isTest = F)
 df.test <- encodeData(df.test)
 
 # generate predictions
-df.test$PredPrice <- predict(fit.manual, newdata = subset(df.test, select = c(BsmtFullBath, BsmtFinSF1, MasVnrType,EncodeBldgType, EncodeCondition1L, EncodeCondition1, EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+df.test$PredPrice <- predict(fit.manual, newdata = subset(df.test, select = c(BsmtFullBath,EncodeBldgType, EncodeCondition1L, EncodeCondition1, EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
 df.test$SalePrice <- exp(df.test$PredPrice)
 
 # create kaggle data frame
