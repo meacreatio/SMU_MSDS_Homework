@@ -164,7 +164,12 @@ summary(fit.both)
 df.train2.kfold <- df.train2
 set.seed(17)
 model <- train(
-  SalePrice ~ ., df.train2.kfold,
+  SalePrice ~ LotArea + OverallQual  
+  + EncodeBsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF
+  + YearBuilt + MSZoning 
+  + OverallCond + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
+  + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1 + EncodeNeighborhood 
+  + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + BsmtFullBath, df.train2.manual,
   method = "lm",
   trControl = trainControl(
     method = "cv", number = 10,
@@ -172,7 +177,7 @@ model <- train(
   ), na.action = na.omit
 )
 model
-# RMSE = 0.1328195, Rsquared = 0.8970295
+
 
 # manual fit
 df.train2.manual <- df.train2
