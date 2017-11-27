@@ -1,5 +1,5 @@
 rss <- function(model) {
-  sum(residuals(model)^2)
+  sum(residuals(model)^2, na.rm = T)
 }
 
 cleanData <- function(df, isTrain = T) {

@@ -28,7 +28,8 @@ summary(fit.full2)
 
 # transform values
 df.train2 <- transformData(df.train2)
-
+# encode variables
+df.train2 <- encodeData(df.train2)
 # get train and test
 set.seed(101) 
 train.size <- 0.8
@@ -49,29 +50,32 @@ df.train2.steps <- df.train2
 fit.steps <- lm(SalePrice ~ ., data = df.train2.steps, na.action = na.exclude)
 
 # olsrr::ols_stepaic_forward(fit.steps, details = T)
-fit.forward <- lm(formula = SalePrice ~ OverallQual + GrLivArea + Neighborhood + TotalBsmtSF + OverallCond 
-                  + YearBuilt + LotArea + BsmtUnfSF + KitchenQual + SaleCondition + GarageCars + Exterior1st 
-                  + Condition1 + BsmtExposure + Fireplaces + MSZoning + BsmtQual + BldgType + Foundation 
-                  + BsmtFullBath + CentralAir + BsmtFinType1 + FullBath + HalfBath + LotConfig + HouseStyle 
-                  + X2ndFlrSF + MasVnrType + PavedDrive + YearRemodAdd + Electrical + ExterCond, 
+fit.forward <- lm(formula = SalePrice ~ OverallQual + GrLivArea + Neighborhood + TotalBsmtSF 
+                  + OverallCond + YearBuilt + LotArea + BsmtUnfSF + KitchenQual + SaleCondition 
+                  + GarageCars + Exterior1st + Condition1 + BsmtExposure + Fireplaces + MSZoning 
+                  + BsmtQual + EncodeBldgType + Foundation + cent1 + BsmtFullBath + CentralAir 
+                  + BsmtFinType1 + MSSubClass + LotConfig + ExterCond + HeatingQC + FullBath 
+                  + HalfBath + PavedDrive + HouseStyle + X2ndFlrSF, 
                   data = df.train2.steps, na.action = na.exclude)
 summary(fit.forward)
 
 # olsrr::ols_stepaic_backward(fit.steps, details = T)
-fit.backward <- lm(SalePrice ~ Id + MSZoning + LotArea + LotConfig + Neighborhood + Condition1 
-                   + BldgType + HouseStyle + OverallQual + OverallCond + YearBuilt + YearRemodAdd 
-                   + Exterior1st + MasVnrType + ExterCond + Foundation + BsmtQual + BsmtExposure 
-                   + BsmtFinType1 + BsmtUnfSF + TotalBsmtSF + CentralAir + Electrical + X2ndFlrSF 
-                   + GrLivArea + BsmtFullBath + FullBath + HalfBath + KitchenQual + Fireplaces 
-                   + GarageCars + PavedDrive + YrSold + SaleCondition, data = df.train2.steps, na.action = na.exclude)
+fit.backward <- lm(SalePrice ~ MSSubClass + MSZoning + LotArea + LotConfig + Neighborhood 
+                   + HouseStyle + OverallQual + OverallCond + YearBuilt + YearRemodAdd + Exterior1st 
+                   + MasVnrType + ExterCond + Foundation + BsmtQual + BsmtExposure + BsmtFinType1 
+                   + BsmtUnfSF + TotalBsmtSF + CentralAir + X2ndFlrSF + GrLivArea + BsmtFullBath 
+                   + FullBath + HalfBath + KitchenQual + Fireplaces + GarageCars + PavedDrive 
+                   + SaleCondition + EncodeBldgType + cent1 + EncodeCondition1 + EncodeCondition1L, 
+                   data = df.train2.steps, na.action = na.exclude)
 summary(fit.backward)
 
-#olsrr::ols_stepaic_both(fit.steps, details = T)
-fit.both <- lm(formula = SalePrice ~ OverallQual + GrLivArea + Neighborhood + TotalBsmtSF + OverallCond 
-               + YearBuilt + LotArea + BsmtUnfSF + KitchenQual + SaleCondition + GarageCars + Exterior1st 
-               + Condition1 + BsmtExposure + Fireplaces + MSZoning + BsmtQual + BldgType + Foundation 
-               + BsmtFullBath + CentralAir + BsmtFinType1 + FullBath + HalfBath + LotConfig + HouseStyle 
-               + X2ndFlrSF + MasVnrType + PavedDrive + YearRemodAdd + Electrical + ExterCond, 
+# olsrr::ols_stepaic_both(fit.steps, details = T)
+fit.both <- lm(formula = SalePrice ~ OverallQual + GrLivArea + Neighborhood + TotalBsmtSF 
+               + OverallCond + YearBuilt + LotArea + BsmtUnfSF + KitchenQual + SaleCondition 
+               + GarageCars + Exterior1st + Condition1 + BsmtExposure + Fireplaces + MSZoning 
+               + BsmtQual + EncodeBldgType + Foundation + cent1 + BsmtFullBath + CentralAir 
+               + BsmtFinType1 + MSSubClass + LotConfig + ExterCond + HeatingQC + FullBath 
+               + HalfBath + PavedDrive + HouseStyle, 
                data = df.train2.steps, na.action = na.exclude)
 summary(fit.both)
 
@@ -96,8 +100,6 @@ model
 
 # manual fit
 df.train2.manual <- df.train2
-
-df.train2.manual <- encodeData(df.train2.manual)
 
 fit.manual <- lm(formula = SalePrice ~ LotArea + OverallQual  
                   + EncodeBsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF
