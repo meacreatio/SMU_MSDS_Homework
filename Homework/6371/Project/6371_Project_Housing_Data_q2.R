@@ -6,58 +6,6 @@ library(caret)
 library(caTools)
 source("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/helper_functions.R")
 
-transformData <- function(df, isTest = F) {
-  df$LotFrontage <- log(df$LotFrontage)
-  df$LotArea <- log(df$LotArea)
-  df$MasVnrArea <- log(df$MasVnrArea)
-  df$BsmtFinSF1 <- log(df$BsmtFinSF1)
-  df$BsmtUnfSf <- log(df$BsmtUnfSF)
-  df$TotalBsmtSF <- log(df$TotalBsmtSF)
-  df$X1stFlrSF <- log(df$X1stFlrSF)
-  
-  v <- sapply(X = df$X2ndFlrSF, function(x) {
-    value = 0
-    if (x != 0) {
-      value = log(x)
-    }
-    value
-  })
-  df$X2ndFlrSF <- v
-  
-  df$GrLivArea <- log(df$GrLivArea)
-  df$GarageArea <- log(df$GarageArea)
-  if(isTest == F) {
-    df$SalePrice <- log(df$SalePrice)
-  }
-  
-  df[mapply(is.infinite, df)] <- NA
-  
-  df
-}
-
-encodeData <- function(df) {
-  df$EncodeLotShape <- as.numeric(df$LotShape)
-  df$EncodeNeighborhood <- ifelse(df$Neighborhood == "MeadowV", 1, 0)
-  df$EncodeHouseStyle <- ifelse(df$HouseStyle == "1Story", 1, 0)
-  df$EncodeBsmtExposure <- ifelse(df$BsmtExposure == "Gd", 1, 0)
-  df$EncodeKitchenQual <- ifelse(df$KitchenQual == "TA", 1, 0)
-  df$EncodeBsmtQual <- ifelse(df$BsmtQual == "Gd" | df$BsmtQual == "TA", 1, 0)
-  df$BathToRoom <- (df$FullBath + df$HalfBath + df$BsmtHalfBath 
-                    + df$BsmtFullBath) / df$BedroomAbvGr
-  df$EncodeBldgType <- ifelse(df$BldgType == "Duplex", 1, 0)
-  df$EncodeHouseStyle <- ifelse(df$HouseStyle == "1Story" | df$HouseStyle == "SFoyer", 1, 0)
-  df$EncodedFoundation <- ifelse(df$Foundation == "PConc" | df$Foundation == "Stone", 1, 0)
-  df$EncodeSaleType <- ifelse(df$SaleType == 'ConLD' | df$SaleType == 'New', 1, 0)
-  df$EncodedSaleCondition <- ifelse(df$SaleCondition == 'Normal' | df$SaleCondition == 'Partial' 
-                                    | df$SaleCondition == 'AdjLand', 1, 0)
-  df$cent1 <- (df$SalePrice - mean(df$SalePrice, na.rm=TRUE)) * (df$EncodedSaleCondition - mean(df$EncodedSaleCondition))
-  df$EncodeNeighborhood <- ifelse(df$Neighborhood == 'StoneBr' | df$Neighborhood == 'Crawfor', 1, 0)
-  df$EncodeCondition1 <- ifelse(df$Condition1 == 'Norm' | df$Neighborhood == 'PosN', 1, 0)
-  df$EncodeCondition1L <- ifelse(df$Condition1 == 'RRAe', 1, 0)
-  df[mapply(is.infinite, df)] <- NA
-  df
-}
-
 df.train2 <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
 df.test <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/testCleaned.csv")
 ## clean data
