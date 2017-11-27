@@ -120,4 +120,4 @@ summary(model1$finalModel)
 # Residual standard error: 0.1936 on 376 degrees of freedom
 # Multiple R-squared:  0.5034,	Adjusted R-squared:  0.4995 
 # F-statistic: 127.1 on 3 and 376 DF,  p-value: < 2.2e-16
-
+sum(residuals(model1$finalModel)^2)
