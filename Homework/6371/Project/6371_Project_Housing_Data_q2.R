@@ -179,7 +179,7 @@ fit.manual <- lm(formula = SalePrice ~ LotArea + OverallQual
                  + YearBuilt + MSZoning 
                  + OverallCond + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
                  + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1 + EncodeNeighborhood 
-                 + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + MasVnrType + BsmtFinSF1 + BsmtFullBath, 
+                 + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + BsmtFullBath, 
                  data = df.train2.manual, na.action = na.exclude)
 
 summary(fit.manual)
@@ -190,7 +190,7 @@ plot(cooks.distance(fit.manual, data = df.train2.manual))
 
 # alpha precitions for pre-validation
 test <- encodeData(test)
-test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(BsmtFullBath, BsmtFinSF1, MasVnrType, EncodeBldgType, EncodeCondition1L, EncodeCondition1,EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(BsmtFullBath, EncodeBldgType, EncodeCondition1L, EncodeCondition1,EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
 sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
 
 # clean, transform, encode test data
@@ -211,8 +211,8 @@ df.kaggle <- df.test[kaggleColumns]
 df.kaggle[mapply(is.na, df.kaggle)] <- exp(mean(df.train2.manual$SalePrice, na.rm=TRUE))
 write.csv(x = df.kaggle, file = "~/Desktop/meacreatio_housing.csv", row.names = F)
 
-# RMSE = 0.08864436
-# 0.16001
+# RMSE = 0.09326669
+# 0.15958
 
 # for testing
 df.trainTest <- read.csv("q1_data1.csv")
