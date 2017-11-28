@@ -141,8 +141,8 @@ df.kaggle <- df.test[kaggleColumns]
 df.kaggle[mapply(is.na, df.kaggle)] <- exp(median(df.train2.manual$SalePrice, na.rm=TRUE))
 write.csv(x = df.kaggle, file = "~/Desktop/meacreatio_housing.csv", row.names = F)
 
-# RMSE = 0.09110417
-# Kaggle = 0.15712
+# RMSE = 0.08840763
+# Kaggle = 0.15198 - fit.both
 
 # for testing
 df.trainTest <- read.csv("q1_data1.csv")
