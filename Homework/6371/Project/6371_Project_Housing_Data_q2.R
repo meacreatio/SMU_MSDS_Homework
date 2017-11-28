@@ -91,12 +91,12 @@ rss(kfold.both)
 
 # manual fit
 df.train2.manual <- df.train2
-formula.manual <- as.formula(SalePrice ~ LotArea + OverallQual + EncodeLotConfig
-                             + BsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF + FullBath
-                             + YearBuilt + MSZoning + EncodeNeighborhoodL + LotArea + BsmtUnfSF
-                             + OverallCond + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
-                             + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1 + EncodeNeighborhood 
-                             + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + BsmtFullBath, env = new.env())
+formula.manual <- as.formula(SalePrice ~ OverallQual + GrLivArea + Neighborhood + TotalBsmtSF 
+                             + OverallCond + YearBuilt + LotArea + BsmtUnfSF + KitchenQual + SaleCondition 
+                             + GarageCars + Condition1 + BsmtExposure + Fireplaces + MSZoning 
+                             + BsmtQual + EncodeBldgType + cent1 + BsmtFullBath + CentralAir 
+                             + BsmtFinType1 + MSSubClass + LotConfig + ExterCond + HeatingQC + FullBath 
+                             + HalfBath + PavedDrive + HouseStyle + cent2, env = new.env())
 fit.manual <- lm(formula = formula.manual, data = df.train2.manual, na.action = na.exclude)
 kfold.manual <- kfold(lmFormula = formula.manual, df = df.train2.manual)
 rss(kfold.manual)
@@ -141,8 +141,8 @@ df.kaggle <- df.test[kaggleColumns]
 df.kaggle[mapply(is.na, df.kaggle)] <- exp(median(df.train2.manual$SalePrice, na.rm=TRUE))
 write.csv(x = df.kaggle, file = "~/Desktop/meacreatio_housing.csv", row.names = F)
 
-# RMSE = 0.08860988
-# Kaggle = 0.15198 - fit.both
+# RMSE = 0.08301512
+# Kaggle = 0.15178 - fit.manual
 
 # for testing
 df.trainTest <- read.csv("q1_data1.csv")

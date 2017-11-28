@@ -88,6 +88,8 @@ encodeData <- function(df) {
   df$EncodeCondition1 <- ifelse(df$Condition1 == 'Norm' | df$Neighborhood == 'PosN', 1, 0)
   df$EncodeCondition1L <- ifelse(df$Condition1 == 'RRAe', 1, 0)
   df$EncodeLotConfig <- ifelse(df$LotConfig == 'FR2', 1, 0)
+  df$EncodeHeatingQC <- ifelse(df$HeatingQC == 'TA', 1, 0)
+  df$cent2 <- (df$SalePrice - mean(df$SalePrice, na.rm=TRUE)) * (df$OverallQual - mean(df$OverallQual))
   df[mapply(is.infinite, df)] <- NA
   df
 }
