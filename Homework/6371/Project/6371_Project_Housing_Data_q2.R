@@ -108,7 +108,7 @@ hist(fit.manual$residuals)
 plot(cooks.distance(fit.manual, data = df.train2.manual))
 
 # alpha precitions for pre-validation
-test$PredPrice <- predict(fit.manual, newdata = subset(test, select = c(BsmtFullBath, EncodeBldgType, EncodeCondition1L, EncodeCondition1,EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+test$PredPrice <- predict(fit.manual, newdata = test)
 sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
 
 # clean, transform, encode test data
@@ -132,7 +132,7 @@ df.test$PredPrice <- predict.lm(object = fit.backward, newdata = df.test)
 df.test$SalePrice <- exp(df.test$PredPrice)
 
 # generate predictions for both
-df.test$PredPrice <- predict(fit.both, newdata = df.test)
+df.test$PredPrice <- predict.lm(object = fit.both, newdata = df.test)
 df.test$SalePrice <- exp(df.test$PredPrice)
 
 # create kaggle data frame
@@ -141,7 +141,7 @@ df.kaggle <- df.test[kaggleColumns]
 df.kaggle[mapply(is.na, df.kaggle)] <- exp(median(df.train2.manual$SalePrice, na.rm=TRUE))
 write.csv(x = df.kaggle, file = "~/Desktop/meacreatio_housing.csv", row.names = F)
 
-# RMSE = 0.09368535
+# RMSE = 0.09110417
 # Kaggle = 0.15712
 
 # for testing
