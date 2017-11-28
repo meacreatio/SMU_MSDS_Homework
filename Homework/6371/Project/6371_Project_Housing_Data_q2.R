@@ -91,8 +91,8 @@ rss(kfold.both)
 
 # manual fit
 df.train2.manual <- df.train2
-formula.manual <- as.formula(SalePrice ~ LotArea + OverallQual  
-                             + BsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF
+formula.manual <- as.formula(SalePrice ~ LotArea + OverallQual + EncodeLotConfig
+                             + BsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF 
                              + YearBuilt + MSZoning + EncodeNeighborhoodL + LotArea + BsmtUnfSF
                              + OverallCond + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
                              + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1 + EncodeNeighborhood 

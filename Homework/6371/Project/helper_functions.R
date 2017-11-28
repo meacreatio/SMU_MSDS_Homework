@@ -87,6 +87,7 @@ encodeData <- function(df) {
                                    | df$Neighborhood == 'Edwards' | df$Neighborhood == 'NWAmes', 1, 0)
   df$EncodeCondition1 <- ifelse(df$Condition1 == 'Norm' | df$Neighborhood == 'PosN', 1, 0)
   df$EncodeCondition1L <- ifelse(df$Condition1 == 'RRAe', 1, 0)
+  df$EncodeLotConfig <- ifelse(df$LotConfig == 'FR2', 1, 0)
   df[mapply(is.infinite, df)] <- NA
   df
 }
