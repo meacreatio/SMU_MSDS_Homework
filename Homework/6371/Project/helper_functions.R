@@ -90,6 +90,7 @@ encodeData <- function(df) {
   df$EncodeLotConfig <- ifelse(df$LotConfig == 'FR2', 1, 0)
   df$EncodeHeatingQC <- ifelse(df$HeatingQC == 'TA', 1, 0)
   df$cent2 <- (df$SalePrice - mean(df$SalePrice, na.rm=TRUE)) * (df$OverallQual - mean(df$OverallQual))
+  df$cent3 <- (df$SalePrice - mean(df$SalePrice, na.rm=TRUE)) * (df$GrLivArea - mean(df$GrLivArea))
   df[mapply(is.infinite, df)] <- NA
   df
 }
