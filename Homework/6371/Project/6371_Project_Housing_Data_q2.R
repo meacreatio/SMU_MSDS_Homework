@@ -92,16 +92,16 @@ rss(kfold.both)
 # manual fit
 df.train2.manual <- df.train2
 formula.manual <- as.formula(SalePrice ~ LotArea + OverallQual + EncodeLotConfig
-                             + BsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF 
-                             + YearBuilt + MSZoning + EncodeNeighborhoodL + LotArea + BsmtUnfSF
+                             + BsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF + FullBath
+                             + YearBuilt + MSZoning + EncodeNeighborhoodL + LotArea + BsmtUnfSF + HalfBath
                              + OverallCond + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
                              + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1 + EncodeNeighborhood 
                              + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + BsmtFullBath, env = new.env())
 fit.manual <- lm(formula = formula.manual, data = df.train2.manual, na.action = na.exclude)
 kfold.manual <- kfold(lmFormula = formula.manual, df = df.train2.manual)
 rss(kfold.manual)
-
 summary(fit.manual)
+
 vif(fit.manual)
 plot(fit.manual)
 hist(fit.manual$residuals)
