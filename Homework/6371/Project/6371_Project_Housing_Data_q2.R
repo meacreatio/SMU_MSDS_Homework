@@ -93,7 +93,7 @@ rss(kfold.both)
 df.train2.manual <- df.train2
 formula.manual <- as.formula(SalePrice ~ LotArea + OverallQual + EncodeLotConfig
                              + BsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF + FullBath
-                             + YearBuilt + MSZoning + EncodeNeighborhoodL + LotArea + BsmtUnfSF + HalfBath
+                             + YearBuilt + MSZoning + EncodeNeighborhoodL + LotArea + BsmtUnfSF
                              + OverallCond + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
                              + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1 + EncodeNeighborhood 
                              + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + BsmtFullBath, env = new.env())
@@ -141,7 +141,7 @@ df.kaggle <- df.test[kaggleColumns]
 df.kaggle[mapply(is.na, df.kaggle)] <- exp(median(df.train2.manual$SalePrice, na.rm=TRUE))
 write.csv(x = df.kaggle, file = "~/Desktop/meacreatio_housing.csv", row.names = F)
 
-# RMSE = 0.08840763
+# RMSE = 0.08860988
 # Kaggle = 0.15198 - fit.both
 
 # for testing
