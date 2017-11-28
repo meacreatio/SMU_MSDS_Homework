@@ -60,8 +60,8 @@ fit.forward <- lm(formula = formula.forward, data = df.train2.steps, na.action =
 summary(fit.forward)
 
 formula.backward <- as.formula(SalePrice ~ MSSubClass + MSZoning + LotArea + LotConfig + Neighborhood 
-                               + HouseStyle + OverallQual + OverallCond + YearBuilt + YearRemodAdd + Exterior1st 
-                               + MasVnrType + ExterCond + Foundation + BsmtQual + BsmtExposure + BsmtFinType1 
+                               + HouseStyle + OverallQual + OverallCond + YearBuilt + YearRemodAdd 
+                               + MasVnrType + ExterCond + BsmtQual + BsmtExposure + BsmtFinType1 
                                + BsmtUnfSF + TotalBsmtSF + CentralAir + X2ndFlrSF + GrLivArea + BsmtFullBath 
                                + FullBath + HalfBath + KitchenQual + Fireplaces + GarageCars + PavedDrive 
                                + SaleCondition + EncodeBldgType + cent1 + EncodeCondition1 + EncodeCondition1L, env = new.env())
@@ -71,8 +71,8 @@ summary(fit.backward)
 
 formula.both <- as.formula(SalePrice ~ OverallQual + GrLivArea + Neighborhood + TotalBsmtSF 
                            + OverallCond + YearBuilt + LotArea + BsmtUnfSF + KitchenQual + SaleCondition 
-                           + GarageCars + Exterior1st + Condition1 + BsmtExposure + Fireplaces + MSZoning 
-                           + BsmtQual + EncodeBldgType + Foundation + cent1 + BsmtFullBath + CentralAir 
+                           + GarageCars + Condition1 + BsmtExposure + Fireplaces + MSZoning 
+                           + BsmtQual + EncodeBldgType + cent1 + BsmtFullBath + CentralAir 
                            + BsmtFinType1 + MSSubClass + LotConfig + ExterCond + HeatingQC + FullBath 
                            + HalfBath + PavedDrive + HouseStyle, env = new.env())
 # olsrr::ols_stepaic_both(fit.steps, details = T)
@@ -93,7 +93,7 @@ rss(kfold.both)
 df.train2.manual <- df.train2
 formula.manual <- as.formula(SalePrice ~ LotArea + OverallQual  
                              + EncodeBsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF
-                             + YearBuilt + MSZoning 
+                             + YearBuilt + MSZoning + EncodeNeighborhoodL
                              + OverallCond + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
                              + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1 + EncodeNeighborhood 
                              + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + BsmtFullBath, env = new.env())
@@ -120,25 +120,19 @@ df.test <- transformData(df.test, isTest = F)
 df.test <- encodeData(df.test)
 
 # generate predictions for manual
-df.test$PredPrice <- predict(fit.manual, newdata = subset(df.test, select = c(BsmtFullBath,EncodeBldgType, EncodeCondition1L, EncodeCondition1, EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+df.test$PredPrice <- predict.lm(fit.manual, df.test)
 df.test$SalePrice <- exp(df.test$PredPrice)
 
 # generate predictions for forward
 df.test$PredPrice <- predict.lm(object = fit.forward, newdata = df.test)
-df.test$PredPrice <- predict(fit.forward, newdata = subset(df.test, select = c(OverallQual,GrLivArea,Neighborhood,TotalBsmtSF,OverallCond,YearBuilt,LotArea,BsmtUnfSF,KitchenQual,SaleCondition,GarageCars,Condition1,BsmtExposure,Fireplaces,MSZoning,BsmtQual,EncodeBldgType,cent1,BsmtFullBath,CentralAir,BsmtFinType1,MSSubClass,LotConfig,ExterCond,HeatingQC,FullBath,HalfBath,PavedDrive,HouseStyle,X2ndFlrSF)))
 df.test$SalePrice <- exp(df.test$PredPrice)
 
 # generate predictions for backward
-df.test$PredPrice <- predict(fit.backward, newdata = subset(df.test, select = c(MSSubClass,MSZoning,LotArea,LotConfig,Neighborhood 
-                                                                              ,HouseStyle,OverallQual,OverallCond,YearBuilt,YearRemodAdd,Exterior1st
-                                                                              ,MasVnrType,ExterCond,Foundation,BsmtQual,BsmtExposure,BsmtFinType1
-                                                                              ,BsmtUnfSF,TotalBsmtSF,CentralAir,X2ndFlrSF,GrLivArea,BsmtFullBath
-                                                                              ,FullBath,HalfBath,KitchenQual,Fireplaces,GarageCars,PavedDrive
-                                                                              ,SaleCondition,EncodeBldgType,cent1,EncodeCondition1,EncodeCondition1L)))
+df.test$PredPrice <- predict.lm(object = fit.backward, newdata = df.test)
 df.test$SalePrice <- exp(df.test$PredPrice)
 
-# generate predictions for manual
-df.test$PredPrice <- predict(fit.manual, newdata = subset(df.test, select = c(BsmtFullBath,EncodeBldgType, EncodeCondition1L, EncodeCondition1, EncodeNeighborhood, cent1, LotArea,OverallQual,EncodeBsmtQual,EncodeBsmtExposure,GrLivArea,TotalBsmtSF,BsmtUnfSF,BathToRoom,YearBuilt,MSZoning,OverallCond,EncodedFoundation,CentralAir,KitchenQual,Fireplaces,GarageCars,EncodeSaleType,EncodedSaleCondition)))
+# generate predictions for both
+df.test$PredPrice <- predict(fit.both, newdata = df.test)
 df.test$SalePrice <- exp(df.test$PredPrice)
 
 # create kaggle data frame

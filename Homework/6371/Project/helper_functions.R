@@ -81,7 +81,10 @@ encodeData <- function(df) {
   df$EncodedSaleCondition <- ifelse(df$SaleCondition == 'Normal' | df$SaleCondition == 'Partial' 
                                     | df$SaleCondition == 'AdjLand', 1, 0)
   df$cent1 <- (df$SalePrice - mean(df$SalePrice, na.rm=TRUE)) * (df$EncodedSaleCondition - mean(df$EncodedSaleCondition))
-  df$EncodeNeighborhood <- ifelse(df$Neighborhood == 'StoneBr' | df$Neighborhood == 'Crawfor', 1, 0)
+  df$EncodeNeighborhood <- ifelse(df$Neighborhood == 'StoneBr' | df$Neighborhood == 'Crawfor' 
+                                  | df$Neighborhood == 'NoRidge', 1, 0)
+  df$EncodeNeighborhoodL <- ifelse(df$Neighborhood == 'MeadowV' | df$Neighborhood == 'Mitchel' 
+                                   | df$Neighborhood == 'Edwards' | df$Neighborhood == 'NWAmes', 1, 0)
   df$EncodeCondition1 <- ifelse(df$Condition1 == 'Norm' | df$Neighborhood == 'PosN', 1, 0)
   df$EncodeCondition1L <- ifelse(df$Condition1 == 'RRAe', 1, 0)
   df[mapply(is.infinite, df)] <- NA
