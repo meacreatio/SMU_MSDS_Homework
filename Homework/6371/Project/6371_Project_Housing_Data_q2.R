@@ -93,7 +93,7 @@ rss(kfold.both)
 df.train2.manual <- df.train2
 formula.manual <- as.formula(SalePrice ~ LotArea + OverallQual  
                              + EncodeBsmtQual + EncodeBsmtExposure + GrLivArea + TotalBsmtSF
-                             + YearBuilt + MSZoning + EncodeNeighborhoodL
+                             + YearBuilt + MSZoning + EncodeNeighborhoodL + LotArea + BsmtUnfSF
                              + OverallCond + EncodedFoundation + CentralAir + KitchenQual + Fireplaces 
                              + GarageCars + EncodeSaleType + EncodedSaleCondition + cent1 + EncodeNeighborhood 
                              + EncodeCondition1 + EncodeCondition1L + EncodeBldgType + BsmtFullBath, env = new.env())
@@ -108,7 +108,7 @@ hist(fit.manual$residuals)
 plot(cooks.distance(fit.manual, data = df.train2.manual))
 
 # alpha precitions for pre-validation
-test$PredPrice <- predict(fit.manual, newdata = test)
+test$PredPrice <- predict.lm(fit.manual, newdata = test)
 sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
 
 # clean, transform, encode test data
