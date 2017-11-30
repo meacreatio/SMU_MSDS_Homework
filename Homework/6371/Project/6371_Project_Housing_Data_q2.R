@@ -164,7 +164,7 @@ df.test$SalePrice <- exp(df.test$PredPrice)
 # create kaggle data frame
 kaggleColumns <- c("Id", "SalePrice")
 df.kaggle <- df.test[kaggleColumns]
-write.csv(x = df.kaggle, file = "meacreatio_housing.csv", row.names = F)
+write.csv(x = df.kaggle, file = "backward.csv", row.names = F)
 
 # RMSE = 0.08386535 fit.manual
 # Kaggle = 0.12127 - fit.both
