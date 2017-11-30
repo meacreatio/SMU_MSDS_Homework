@@ -144,7 +144,6 @@ if (writeImputeData == T) {
   write.csv(x = df.test, file = "~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/true_test.csv", row.names = F)
 }
 
-
 # generate predictions for manual
 df.test$PredPrice <- predict.lm(fit.manual, df.test)
 df.test$SalePrice <- exp(df.test$PredPrice)
@@ -164,9 +163,9 @@ df.test$SalePrice <- exp(df.test$PredPrice)
 # create kaggle data frame
 kaggleColumns <- c("Id", "SalePrice")
 df.kaggle <- df.test[kaggleColumns]
-write.csv(x = df.kaggle, file = "backward.csv", row.names = F)
+write.csv(x = df.kaggle, file = "manual.csv", row.names = F)
 
-# RMSE = 0.08386535 fit.manual
+# RMSE = 0.08950696 fit.manual
 # Kaggle = 0.12127 - fit.both
 
 # for testing
