@@ -78,7 +78,7 @@ encodeData <- function(df) {
                     + df$BsmtFullBath) / df$BedroomAbvGr
   df$EncodeBldgType <- ifelse(df$BldgType == "Duplex", 1, 0)
   df$EncodeHouseStyle <- ifelse(df$HouseStyle == "1Story" | df$HouseStyle == "SFoyer", 1, 0)
-  df$EncodedFoundation <- ifelse(df$Foundation == "PConc" | df$Foundation == "Stone", 1, 0)
+  df$EncodedFoundation <- ifelse(df$Foundation == "PConc" | df$Foundation == "Slab", 1, 0)
   df$EncodeSaleType <- ifelse(df$SaleType == 'ConLD' | df$SaleType == 'New', 1, 0)
   df$EncodedSaleCondition <- ifelse(df$SaleCondition == 'Normal' | df$SaleCondition == 'Partial' 
                                     | df$SaleCondition == 'AdjLand', 1, 0)
@@ -93,6 +93,8 @@ encodeData <- function(df) {
   df$EncodeHeatingQC <- ifelse(df$HeatingQC == 'TA', 1, 0)
   df$cent2 <- (df$SalePrice - mean(df$SalePrice, na.rm=TRUE)) * (df$OverallQual - mean(df$OverallQual))
   df$cent3 <- (df$SalePrice - mean(df$SalePrice, na.rm=TRUE)) * (df$GrLivArea - mean(df$GrLivArea))
+  df$EncodeExteriorFirst <- ifelse(df$ExteriorFirst == 'BrkFace', 1, 0)
+  
   df[mapply(is.infinite, df)] <- NA
   df
 }
