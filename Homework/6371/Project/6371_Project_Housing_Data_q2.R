@@ -4,14 +4,15 @@ library(olsrr)
 library(car)
 library(caret)
 library(caTools)
+library(mice)
 source("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/helper_functions.R")
 
-df.train2 <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
-df.test <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/testCleaned.csv")
-## clean data
-df.train2 <- cleanData(df.train2)
+df.train2 <- read.csv("train.csv")
+df.test <- read.csv("true_test.csv")
+## clean data for scatter plots
+df.train2.scatters <- cleanData(df.train2)
 
-fit.full2 <- lm(df.train2$SalePrice ~ ., data = df.train2, na.action = na.exclude)
+fit.full2 <- lm(df.train2.scatters$SalePrice ~ ., data = df.train2, na.action = na.exclude)
 summary(fit.full2)
 
 # look at the scatter plots to assess for normality ####################
@@ -25,12 +26,19 @@ summary(fit.full2)
 
 # hist(df.train2.numeric$SalePrice)
 ######################################################################
-
+# for generating imputed training data
+# clean data
+# df.train2 <- cleanData(df.train2)
 # transform values
-df.train2 <- transformData(df.train2)
+# df.train2 <- transformData(df.train2)
 # encode variables
-df.train2 <- encodeData(df.train2)
-# get train and test
+# df.train2 <- encodeData(df.train2)
+# df.train2 <- mice(df.train2[, names(df.train2)], method="rf")
+# df.train2 <- complete(df.train2)
+# write.csv(x = df.train2, file = "~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/true_train.csv", row.names = F)
+df.train2 <- read.csv("true_train.csv")
+
+# get internal train and test
 set.seed(101) 
 train.size <- 0.8
 train.index <- sample.int(length(df.train2$SalePrice), round(length(df.train2$SalePrice) * train.size))
@@ -39,9 +47,6 @@ train = df.train2[train.index, ]
 test  = df.train2[-train.index, ]
 
 # df.train2 <- train
-
-# remove inf
-df.train2[mapply(is.infinite, df.train2)] <- NA
 
 #--------------------------------------------------------#
 
@@ -112,12 +117,16 @@ test$PredPrice <- predict.lm(fit.manual, newdata = test)
 sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
 
 # clean, transform, encode test data
-t <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
+t <- read.csv("true_train.csv")
 t <- t[-c(1460), ]
 df.test$SalePrice <- log(t$SalePrice)
-df.test <- cleanData(df.test, isTrain = F)
-df.test <- transformData(df.test, isTest = F)
-df.test <- encodeData(df.test)
+# for creating an imputed test set with test.csv
+# df.test <- cleanData(df.test, isTrain = F)
+# df.test <- transformData(df.test, isTest = F)
+# df.test <- encodeData(df.test)
+# df.test <- mice(df.test[, names(df.test)], method="rf")
+# df.test <- complete(df.test)
+# write.csv(x = df.test, file = "~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/true_test.csv", row.names = F)
 
 # generate predictions for manual
 df.test$PredPrice <- predict.lm(fit.manual, df.test)
@@ -138,11 +147,10 @@ df.test$SalePrice <- exp(df.test$PredPrice)
 # create kaggle data frame
 kaggleColumns <- c("Id", "SalePrice")
 df.kaggle <- df.test[kaggleColumns]
-df.kaggle[mapply(is.na, df.kaggle)] <- exp(median(df.train2.manual$SalePrice, na.rm=TRUE))
-write.csv(x = df.kaggle, file = "~/Desktop/meacreatio_housing.csv", row.names = F)
+write.csv(x = df.kaggle, file = "meacreatio_housing.csv", row.names = F)
 
-# RMSE = 0.08301512
-# Kaggle = 0.15178 - fit.manual
+# RMSE = 0.08386535
+# Kaggle = 0.12352 - fit.manual
 
 # for testing
 df.trainTest <- read.csv("q1_data1.csv")
