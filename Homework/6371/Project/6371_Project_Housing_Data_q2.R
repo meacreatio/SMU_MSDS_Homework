@@ -5,7 +5,7 @@ library(car)
 library(caret)
 library(caTools)
 library(mice)
-source("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/helper_functions.R")
+source("helper_functions.R")
 
 df.train2 <- read.csv("train.csv")
 df.test <- read.csv("true_test.csv")
@@ -37,7 +37,7 @@ if (writeImputeData == T) {
   df.train2 <- encodeData(df.train2)
   df.train2 <- mice(df.train2[, names(df.train2)], method="rf")
   df.train2 <- complete(df.train2)
-  write.csv(x = df.train2, file = "~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/true_train.csv", row.names = F)
+  write.csv(x = df.train2, file = "true_train.csv", row.names = F)
 }
 
 df.train2 <- read.csv("true_train.csv")
@@ -141,7 +141,7 @@ if (writeImputeData == T) {
   df.test <- encodeData(df.test)
   df.test <- mice(df.test[, names(df.test)], method="rf")
   df.test <- complete(df.test)
-  write.csv(x = df.test, file = "~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/true_test.csv", row.names = F)
+  write.csv(x = df.test, file = "true_test.csv", row.names = F)
 }
 
 # generate predictions for manual

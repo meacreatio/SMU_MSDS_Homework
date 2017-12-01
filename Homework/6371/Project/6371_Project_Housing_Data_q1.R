@@ -1,8 +1,8 @@
 library(car)
 library(Amelia)
-source("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/helper_functions.R")
+source("helper_functions.R")
 
-df.train <- read.csv("~/Desktop/SMU_MSDS_Homework/Homework/6371/Project/train.csv")
+df.train <- read.csv("train.csv")
 df.train <- cleanData(df.train)
 ameliatedData6 <- amelia(df.train,m=1, p2s=1, ords = c("MSZoning", "LotShape", "LotConfig", "Neighborhood", "Condition1", 
                                                                 "BldgType", "HouseStyle", "RoofStyle", "ExteriorFirst", "Exterior2nd", 
