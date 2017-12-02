@@ -15,7 +15,7 @@ df.train2.scatters <- cleanData(df.train2)
 fit.full2 <- lm(df.train2.scatters$SalePrice ~ ., data = df.train2, na.action = na.exclude)
 summary(fit.full2)
 
-# look at the scatter plots to assess for normality ####################
+# look at the scatter plots and SalePrice histogram to assess assumptions
 #df.train2.numeric <- select_if(df.train2, is.numeric)
 
 #df.plots <- melt(df.train2.numeric, "SalePrice")
@@ -26,6 +26,7 @@ summary(fit.full2)
 
 # hist(df.train2.numeric$SalePrice)
 ######################################################################
+
 # for generating imputed training data
 writeImputeData <- F
 if (writeImputeData == T) {
@@ -120,19 +121,19 @@ kfold.manual <- kfold(lmFormula = formula.manual, df = df.train2.manual)
 rss(kfold.manual)
 summary(fit.manual)
 
-vif(fit.manual)
-plot(fit.manual)
-hist(fit.manual$residuals)
-plot(cooks.distance(fit.manual, data = df.train2.manual))
+#----------------------------------------------------------------#
+# both (stepwise) model is the best
+vif(fit.both)
+plot(fit.both)
+hist(fit.both$residuals)
+plot(cooks.distance(fit.both, data = df.train2.steps))
 
-# alpha precitions for pre-validation
-test$PredPrice <- predict.lm(fit.manual, newdata = test)
+# alpha preditions for pre-validation
+test$PredPrice <- predict.lm(fit.both, newdata = test)
 sqrt(mean((test$PredPrice - test$SalePrice) ^2, na.rm=TRUE))
 
 # clean, transform, encode test data
-t <- read.csv("train.csv")
-t <- t[-c(1460), ]
-df.test$SalePrice <- log(t$SalePrice)
+df.test$SalePrice <- rep(0, 1459)
 
 # for creating an imputed test set with test.csv
 if (writeImputeData == T) {
@@ -145,16 +146,16 @@ if (writeImputeData == T) {
 }
 
 # generate predictions for manual
-df.test$PredPrice <- predict.lm(fit.manual, df.test)
-df.test$SalePrice <- exp(df.test$PredPrice)
+#df.test$PredPrice <- predict.lm(fit.manual, df.test)
+# df.test$SalePrice <- exp(df.test$PredPrice)
 
 # generate predictions for forward
-df.test$PredPrice <- predict.lm(object = fit.forward, newdata = df.test)
-df.test$SalePrice <- exp(df.test$PredPrice)
+#df.test$PredPrice <- predict.lm(object = fit.forward, newdata = df.test)
+# df.test$SalePrice <- exp(df.test$PredPrice)
 
 # generate predictions for backward
-df.test$PredPrice <- predict.lm(object = fit.backward, newdata = df.test)
-df.test$SalePrice <- exp(df.test$PredPrice)
+# df.test$PredPrice <- predict.lm(object = fit.backward, newdata = df.test)
+# df.test$SalePrice <- exp(df.test$PredPrice)
 
 # generate predictions for both
 df.test$PredPrice <- predict.lm(object = fit.both, newdata = df.test)
@@ -163,9 +164,9 @@ df.test$SalePrice <- exp(df.test$PredPrice)
 # create kaggle data frame
 kaggleColumns <- c("Id", "SalePrice")
 df.kaggle <- df.test[kaggleColumns]
-write.csv(x = df.kaggle, file = "predictions.csv", row.names = F)
+write.csv(x = df.kaggle, file = "kaggle_predictions.csv", row.names = F)
 
-# RMSE = 0.08950696 fit.manual
+# RMSE = 0.08283118 fit.both
 # Kaggle = 0.12127 - fit.both
 
 
