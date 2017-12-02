@@ -168,18 +168,6 @@ write.csv(x = df.kaggle, file = "predictions.csv", row.names = F)
 # RMSE = 0.08950696 fit.manual
 # Kaggle = 0.12127 - fit.both
 
-# for testing
-df.trainTest <- read.csv("q1_data1.csv")
-df.trainTest <- transformData(df.trainTest)
-df.trainTest[mapply(is.na, df.trainTest)] <- 0
-modelTest <- train(
-  SalePrice ~ ., data = df.trainTest,
-  method = "lm",
-  trControl = trainControl(
-    method = "cv", number = 10,
-    verboseIter = TRUE
-  ), na.action = na.omit
-)
 
 
 
