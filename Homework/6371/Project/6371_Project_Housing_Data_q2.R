@@ -1,11 +1,6 @@
-library(dplyr)
-library(MASS)
-library(olsrr)
-library(car)
-library(caret)
-library(caTools)
-library(mice)
 source("helper_functions.R")
+libraries <- c('dplyr', 'olsrr', 'car', 'caret', 'mice', 'reshape')
+loadLibraries(libs = libraries)
 
 df.train2 <- read.csv("train.csv")
 df.test <- read.csv("true_test.csv")
@@ -16,13 +11,13 @@ fit.full2 <- lm(df.train2.scatters$SalePrice ~ ., data = df.train2, na.action = 
 summary(fit.full2)
 
 # look at the scatter plots and SalePrice histogram to assess assumptions
-#df.train2.numeric <- select_if(df.train2, is.numeric)
+# df.train2.numeric <- select_if(df.train2, is.numeric)
 
-#df.plots <- melt(df.train2.numeric, "SalePrice")
+# df.plots <- melt(df.train2.numeric, "SalePrice")
 
 #ggplot(df.plots, aes(value, df.plots$SalePrice)) + 
  # geom_point() + 
-  #facet_wrap(~variable, scales = "free")
+  # facet_wrap(~variable, scales = "free")
 
 # hist(df.train2.numeric$SalePrice)
 ######################################################################
