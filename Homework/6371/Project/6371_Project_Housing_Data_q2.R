@@ -1,12 +1,8 @@
-library(dplyr)
-library(MASS)
-library(olsrr)
-library(car)
-library(caret)
-library(caTools)
-library(mice)
 source("helper_functions.R")
+libraries <- c('dplyr', 'olsrr', 'car', 'caret', 'mice')
+loadLibraries(libs = libraries)
 
+# get datasets
 df.train2 <- read.csv("train.csv")
 df.test <- read.csv("true_test.csv")
 ## clean data for scatter plots
