@@ -1,9 +1,3 @@
-loadLibraries <- function(libs) {
-  missingLibs <- load.libraries[!load.libraries %in% installed.packages()]
-  sapply(X = missingLibs, function(x) install.packages(x, dependences = TRUE))
-  sapply(libs, require, character = TRUE)
-}
-
 rss <- function(model) {
   sum(residuals(model)^2, na.rm = T)
 }
