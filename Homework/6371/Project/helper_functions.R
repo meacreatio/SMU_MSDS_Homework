@@ -1,6 +1,8 @@
 loadLibraries <- function(libs) {
   missingLibs <- libs[!libs %in% installed.packages()]
-  sapply(X = missingLibs, function(x) install.packages(x, dependences = TRUE))
+  for(l in missingLibs) {
+    install.packages(l, dependences = TRUE)
+  }
   sapply(libs, require, character = TRUE)
 }
 
