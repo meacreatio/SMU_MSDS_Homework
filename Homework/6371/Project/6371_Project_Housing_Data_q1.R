@@ -1,23 +1,53 @@
 source("helper_functions.R")
-libraries <- c('car', 'Amelia', 'caret')
+libraries <- c('car', 'Amelia', 'caret', 'ggfortify')
 loadLibraries(libs = libraries)
 
 df.train <- read.csv("train.csv")
 df.train <- cleanData(df.train)
+
+#Create plots prior to data transformation for inspection
+df.trainG <- df.train[c("Id", "Neighborhood", "GrLivArea","SalePrice")]
+df.trainG <- subset(df.trainG, Neighborhood == 'NAmes' | Neighborhood == 'Edwards' | Neighborhood == 'BrkSide')
+df.trainoutliers <- df.trainG[(df.trainG$Id %in% c(1299, 643, 725, 524, 1424)), ]
+df.trainoutliers$PPSF <- (df.trainoutliers$SalePrice / df.trainoutliers$GrLivArea)
+
+#Calculate Price Per Square Foot for data set and by Neighborhood
+AvgPriceperSqFt <- mean(df.trainG$SalePrice) / mean(df.trainG$GrLivArea)
+df.PPSF <- df.trainG %>% group_by(Neighborhood) %>% summarise(SalePriceMean=mean(SalePrice), GrLivAreaMean=mean(GrLivArea))
+df.PPSF$PPSF <- df.PPSF$SalePriceMean / df.PPSF$GrLivAreaMean
+
+#Log transformation of SalesPrice and GrLivArea to allow for comparison
+df.trainG$logSalePrice <- log(df.trainG$SalePrice)
+df.trainG$logGrLivArea <- log(df.trainG$GrLivArea)
+df.trainG$EncodeN <- ifelse(df.trainG$Neighborhood == "NAmes", 1, 0)
+df.trainG$EncodeE <- ifelse(df.trainG$Neighborhood == "Edwards", 1, 0)
+df.trainG$cent1 <- (df.trainG$logGrLivArea - mean(df.trainG$logGrLivArea)) * (df.trainG$EncodeN - mean(df.trainG$EncodeN))
+df.trainG$cent2 <- (df.trainG$logGrLivArea - mean(df.trainG$logGrLivArea)) * (df.trainG$EncodeE - mean(df.trainG$EncodeE))
+
+#linear linear with diagnostic plots
+fit.trainG <- lm(SalePrice ~ GrLivArea + Neighborhood, data = df.trainG)
+summary(fit.trainG)
+autoplot(fit.trainG, which = 1:6)
+ols_rsd_hist(fit.trainG)
+
+#log log
+fit.trainG <- lm(logSalePrice ~ logGrLivArea + Neighborhood, data = df.trainG)
+summary(fit.trainG)
+autoplot(fit.trainG, which = 1:6)
+ols_rsd_hist(fit.trainG)
+
 ameliatedData6 <- amelia(df.train,m=1, p2s=1, ords = c("MSZoning", "LotShape", "LotConfig", "Neighborhood", "Condition1", 
-                                                                "BldgType", "HouseStyle", "RoofStyle", "ExteriorFirst", "Exterior2nd", 
-                                                                "MasVnrType", "ExterQual", "ExterCond", "Foundation", "BsmtQual", 
-                                                                "BsmtExposure", "BsmtFinType1", "HeatingQC", "CentralAir", "Electrical", 
-                                                                "KitchenQual", "GarageType", "GarageFinish", "PavedDrive", "SaleType", 
-                                                                "SaleCondition"))
+                                                       "BldgType", "HouseStyle", "RoofStyle", "ExteriorFirst", "Exterior2nd", 
+                                                       "MasVnrType", "ExterQual", "ExterCond", "Foundation", "BsmtQual", 
+                                                       "BsmtExposure", "BsmtFinType1", "HeatingQC", "CentralAir", "Electrical", 
+                                                       "KitchenQual", "GarageType", "GarageFinish", "PavedDrive", "SaleType", 
+                                                       "SaleCondition"))
 
 write.amelia(obj=ameliatedData6, file.stem="q1_data")
 df.train <- read.csv("q1_data1.csv")
 
 # handle only NAmes, Edwards, BrkSide
 df.filtered <- df.train[df.train$Neighborhood == "NAmes" | df.train$Neighborhood == "Edwards" | df.train$Neighborhood == "BrkSide", ]
-
-
 
 fit.full <- lm(df.filtered$SalePrice ~ df.filtered$GrLivArea + df.filtered$Neighborhood, data = df.filtered)
 summary(fit.full)
