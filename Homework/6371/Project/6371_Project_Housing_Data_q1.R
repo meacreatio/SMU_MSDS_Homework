@@ -1,6 +1,7 @@
 source("helper_functions.R")
-libraries <- c('car', 'Amelia', 'caret')
-loadLibraries(libs = libraries)
+library(car)
+library(Amelia)
+library(caret)
 
 df.train <- read.csv("train.csv")
 df.train <- cleanData(df.train)

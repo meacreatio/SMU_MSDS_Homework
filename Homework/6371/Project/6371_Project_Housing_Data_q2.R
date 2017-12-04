@@ -1,6 +1,10 @@
 source("helper_functions.R")
-libraries <- c('dplyr', 'olsrr', 'car', 'caret', 'mice', 'reshape')
-loadLibraries(libs = libraries)
+library(dplyr)
+library(olsrr)
+library(car)
+library(caret)
+library(mice)
+library(reshape)
 
 df.train2 <- read.csv("train.csv")
 df.test <- read.csv("true_test.csv")
