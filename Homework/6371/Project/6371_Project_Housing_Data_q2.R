@@ -132,6 +132,7 @@ plot(fit.both)
 hist(fit.both$residuals)
 plot(cooks.distance(fit.both, data = df.train2.steps))
 autoplot(fit.both, which = 1:6)
+confint(fit.both)
 
 # alpha preditions for pre-validation
 test$PredPrice <- predict.lm(fit.both, newdata = test)
