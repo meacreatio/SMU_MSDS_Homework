@@ -5,6 +5,7 @@ library(car)
 library(caret)
 library(mice)
 library(reshape)
+library(ggfortify)
 
 df.train2 <- read.csv("train.csv")
 df.test <- read.csv("true_test.csv")
@@ -20,10 +21,19 @@ summary(fit.full2)
 # df.plots <- melt(df.train2.numeric, "SalePrice")
 
 #ggplot(df.plots, aes(value, df.plots$SalePrice)) + 
- # geom_point() + 
-  # facet_wrap(~variable, scales = "free")
+# geom_point() + 
+# facet_wrap(~variable, scales = "free")
 
 # hist(df.train2.numeric$SalePrice)
+
+#Save outliers for analysis
+df.Q2outliers <- read.csv("train.csv")
+Q2meanSalePrice <- mean(df.Q2outliers$SalePrice)
+Q2meanGrLivArea <- mean(df.Q2outliers$GrLivArea)
+Q2PPSF <- Q2meanSalePrice / Q2meanGrLivArea
+df.Q2outliers <- df.Q2outliers[(df.Q2outliers$Id %in% c(1299, 524, 3, 463, 633, 89, 589, 496, 682, 813, 969)), ]
+df.Q2outliers$PPSF <- df.Q2outliers$SalePrice / df.Q2outliers$GrLivArea
+
 ######################################################################
 
 # for generating imputed training data
@@ -126,6 +136,8 @@ vif(fit.both)
 plot(fit.both)
 hist(fit.both$residuals)
 plot(cooks.distance(fit.both, data = df.train2.steps))
+autoplot(fit.both, which = 1:6)
+confint(fit.both)
 
 # alpha preditions for pre-validation
 test$PredPrice <- predict.lm(fit.both, newdata = test)
@@ -167,8 +179,3 @@ write.csv(x = df.kaggle, file = "kaggle_predictions.csv", row.names = F)
 
 # RMSE = 0.08283118 fit.both
 # Kaggle = 0.12127 - fit.both
-
-
-
-
-
