@@ -92,6 +92,7 @@ vif(fit.full)
 # remove EncodeE and cent2 due to their high p-values
 fit.reduced <- lm(df.filtered$logSalePrice ~ df.filtered$LogGrLiveArea + df.filtered$EncodeN + df.filtered$cent1, data = df.filtered)
 summary(fit.reduced)
+confint(fit.reduced)
 
 # compare the two models -> including neighborhood contibutes significantly to the model
 anova(fit.full, fit.reduced)
